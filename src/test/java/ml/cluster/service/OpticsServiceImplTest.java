@@ -23,8 +23,6 @@ public class OpticsServiceImplTest {
 	@Test
 	public void testGroupByLine() {
 
-
-
 	}
 
 	@Test
