@@ -1,9 +1,9 @@
 package ml.cluster.service;
 
-import ml.cluster.to.PickLocation;
+import ml.cluster.to.PickLocationViewDO;
 
 import java.util.List;
 
 public interface OpticsService {
-    void getOptics(List<PickLocation> pickLocationList);
+    void getOptics(List<PickLocationViewDO> pickLocationViewDOList);
 }

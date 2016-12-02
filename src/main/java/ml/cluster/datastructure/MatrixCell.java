@@ -1,6 +1,6 @@
 package ml.cluster.datastructure;
 
-import ml.cluster.to.PickLocation;
+import ml.cluster.to.PickLocationViewDO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ public final class MatrixCell {
 
     private final long rowNumber;
     private final long columnNumber;
-    private final List<PickLocation> pickLocations;
+    private final List<PickLocationViewDO> pickLocationViewDOs;
     private final List<Integer> neighborPickingLocations;
 
     private double maxX;
@@ -20,7 +20,7 @@ public final class MatrixCell {
     public MatrixCell(final long rowNumber, final long columnNumber) {
         this.rowNumber = rowNumber;
         this.columnNumber = columnNumber;
-        this.pickLocations = new ArrayList<PickLocation>();
+        this.pickLocationViewDOs = new ArrayList<PickLocationViewDO>();
         this.neighborPickingLocations = new ArrayList<Integer>();
     }
 
@@ -32,16 +32,16 @@ public final class MatrixCell {
         return columnNumber;
     }
 
-    public List<PickLocation> getPickLocations() {
-        return pickLocations;
+    public List<PickLocationViewDO> getPickLocationViewDOs() {
+        return pickLocationViewDOs;
     }
 
     public List<Integer> getNeighborPickingLocations() {
         return neighborPickingLocations;
     }
 
-    public void addToPickLocations(final PickLocation pickLocation) {
-        this.pickLocations.add(pickLocation);
+    public void addToPickLocations(final PickLocationViewDO pickLocationViewDO) {
+        this.pickLocationViewDOs.add(pickLocationViewDO);
     }
 
     public void addToNeighborPickingLocations(final Integer cellNumber) {
@@ -85,7 +85,7 @@ public final class MatrixCell {
         return "MatrixCell {" +
                "rowNumber=" + rowNumber +
                ", columnNumber=" + columnNumber +
-               ", pickLocations=" + pickLocations +
+               ", pickLocationViewDOs=" + pickLocationViewDOs +
                ", neighborPickingLocations=" + neighborPickingLocations +
                ", maxX=" + maxX +
                ", minX=" + minX +

@@ -1,6 +1,6 @@
 package ml.cluster.datastructure;
 
-import ml.cluster.to.PickLocation;
+import ml.cluster.to.PickLocationViewDO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ public final class PickSegment {
     private final double maxY;
     private final double minY;
     private final String line;
-    private final List<PickLocation> pickLocations;
+    private final List<PickLocationViewDO> pickLocationViewDOs;
     private FixedRadiusMatrix matrix;
 
     public PickSegment(final String line, final double minY, final double maxY, final double minX, final double maxX) {
@@ -21,7 +21,7 @@ public final class PickSegment {
         this.maxY = maxY;
         this.minX = minX;
         this.maxX = maxX;
-        this.pickLocations = new ArrayList<PickLocation>();
+        this.pickLocationViewDOs = new ArrayList<PickLocationViewDO>();
     }
 
     public double getMaxX() {
@@ -44,12 +44,12 @@ public final class PickSegment {
         return line;
     }
 
-    public List<PickLocation> getPickLocations() {
-        return pickLocations;
+    public List<PickLocationViewDO> getPickLocationViewDOs() {
+        return pickLocationViewDOs;
     }
 
-    public void addToPickLocations(final PickLocation pickLocation) {
-        this.pickLocations.add(pickLocation);
+    public void addToPickLocations(final PickLocationViewDO pickLocationViewDO) {
+        this.pickLocationViewDOs.add(pickLocationViewDO);
     }
 
     public FixedRadiusMatrix getMatrix() {
@@ -63,13 +63,13 @@ public final class PickSegment {
     @Override
     public String toString() {
         return "PickSegment {" +
-                "maxX=" + maxX +
-                ", minX=" + minX +
-                ", maxY=" + maxY +
-                ", minY=" + minY +
-                ", line='" + line + '\'' +
-                ", pickLocations=" + pickLocations +
-                ", matrix=" + matrix +
-                '}';
+               "maxX=" + maxX +
+               ", minX=" + minX +
+               ", maxY=" + maxY +
+               ", minY=" + minY +
+               ", line='" + line + '\'' +
+               ", pickLocationViewDOs=" + pickLocationViewDOs +
+               ", matrix=" + matrix +
+               '}';
     }
 }

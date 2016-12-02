@@ -13,33 +13,33 @@ import org.apache.commons.lang3.Validate;
 import ml.cluster.datastructure.FixedRadiusMatrix;
 import ml.cluster.datastructure.MatrixCell;
 import ml.cluster.datastructure.PickSegment;
-import ml.cluster.to.PickLocation;
+import ml.cluster.to.PickLocationViewDO;
 
 public class OpticsServiceImpl implements OpticsService {
 
 	@Override
-	public void getOptics(final List<PickLocation> pickLocations) {
-		Validate.notEmpty(pickLocations, "Pick locations are not defined");
+	public void getOptics(final List<PickLocationViewDO> pickLocationViewDOs) {
+		Validate.notEmpty(pickLocationViewDOs, "Pick locations are not defined");
 
-		final Map<String, List<PickLocation>> segmentGroups = groupByLine(pickLocations);
-		final Map<PickSegment, List<PickLocation>> pickSegments = defineSegmentBoundaries(segmentGroups);
+		final Map<String, List<PickLocationViewDO>> segmentGroups = groupByLine(pickLocationViewDOs);
+		final Map<PickSegment, List<PickLocationViewDO>> pickSegments = defineSegmentBoundaries(segmentGroups);
 
 		generateSegmentMatrix(pickSegments);
 		assignPickLocationsToMatrixCells(pickSegments);
 
 	}
 
-	private Map<String, List<PickLocation>> groupByLine(final List<PickLocation> pickLocations) {
-		return Collections.unmodifiableMap(pickLocations.stream().collect(Collectors.groupingBy(PickLocation::getLine)));
+	protected Map<String, List<PickLocationViewDO>> groupByLine(final List<PickLocationViewDO> pickLocations) {
+		return Collections.unmodifiableMap(pickLocations.stream().collect(Collectors.groupingBy(PickLocationViewDO::getLine)));
 	}
 
-	private Map<PickSegment, List<PickLocation>> defineSegmentBoundaries(final Map<String, List<PickLocation>> segmentGroups) {
-		final Map<PickSegment, List<PickLocation>> pickSegments = new HashMap<>();
+	protected Map<PickSegment, List<PickLocationViewDO>> defineSegmentBoundaries(final Map<String, List<PickLocationViewDO>> segmentGroups) {
+		final Map<PickSegment, List<PickLocationViewDO>> pickSegments = new HashMap<>();
 
 		segmentGroups.forEach((line, pickLocations) -> {
-			final Stream<PickLocation> stream = pickLocations.stream();
-			final DoubleSummaryStatistics xStats = stream.mapToDouble(PickLocation::getX).summaryStatistics();
-			final DoubleSummaryStatistics yStats = stream.mapToDouble(PickLocation::getY).summaryStatistics();
+			final Stream<PickLocationViewDO> stream = pickLocations.stream();
+			final DoubleSummaryStatistics xStats = stream.mapToDouble(PickLocationViewDO::getX).summaryStatistics();
+			final DoubleSummaryStatistics yStats = stream.mapToDouble(PickLocationViewDO::getY).summaryStatistics();
 
 			final double minY = yStats.getMin();
 			final double maxY = yStats.getMax();
@@ -52,7 +52,7 @@ public class OpticsServiceImpl implements OpticsService {
 		return Collections.unmodifiableMap(pickSegments);
 	}
 
-	private void generateSegmentMatrix(final Map<PickSegment, List<PickLocation>> pickSegments) {
+	protected void generateSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
 		pickSegments.forEach((segment, locations) -> {
 
 			final FixedRadiusMatrix matrix = new FixedRadiusMatrix.MatrixBuilder().build();
@@ -63,34 +63,9 @@ public class OpticsServiceImpl implements OpticsService {
 			final double cellHeight = matrixHeight / matrix.getCellHeightRatio();
 			final double cellWidth = matrixWidth / matrix.getCellWidthRatio();
 
-			generateSegmentMatrixCells(cellHeight, matrixHeight, 0, 0, cellWidth, matrixWidth, 0, 0, matrix, segment);
-
-			// LongStream.range(1, rows + 1).forEach(row -> LongStream.range(1,
-			// columns + 1).forEach(column -> {
-			// final MatrixCell cell = new MatrixCell(row, column);
-			// matrix.addToSegmentPickLocations(cell);
-			// }));
 
 			segment.setMatrix(matrix);
 		});
-	}
-
-	private void generateSegmentMatrixCells(final double cellHeight, final double maxMatrixHeight, final double currentMatrixHeight, final long currentRow,
-			final double cellWidth, final double maxMatrixWidth, final double currentMatrixWidth, final long currentColumn, final FixedRadiusMatrix matrix,
-			final PickSegment segment) {
-
-		if (currentMatrixHeight < maxMatrixHeight) {
-
-			createMatrixCell(currentRow, currentColumn, cellWidth, cellHeight, matrix, segment);
-			generateSegmentMatrixCells(cellHeight, maxMatrixHeight, currentMatrixHeight, 0, cellWidth, maxMatrixWidth, currentMatrixWidth + cellWidth,
-									   currentColumn + 1, matrix, segment);
-
-		} else if (currentMatrixWidth < maxMatrixWidth) {
-
-			createMatrixCell(currentRow, currentColumn, cellWidth, cellHeight, matrix, segment);
-			generateSegmentMatrixCells(cellHeight, maxMatrixHeight, currentMatrixHeight, 0, cellWidth, maxMatrixWidth, currentMatrixWidth + cellWidth,
-									   currentColumn + 1, matrix, segment);
-		}
 	}
 
 	private void createMatrixCell(final long currentRow, final long currentColumn, final double cellWidth, final double cellHeight,
@@ -109,7 +84,7 @@ public class OpticsServiceImpl implements OpticsService {
 		cell.setMaxY(cellMaxY);
 	}
 
-	private void assignPickLocationsToMatrixCells(final Map<PickSegment, List<PickLocation>> pickSegments) {
+	private void assignPickLocationsToMatrixCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
 		pickSegments.forEach((segment, locations) -> {
 
 			final double segmentMinX = segment.getMinX();
@@ -138,7 +113,7 @@ public class OpticsServiceImpl implements OpticsService {
 		});
 	}
 
-	private boolean isLocationInCell(final PickSegment pickSegment, final PickLocation pickLocation, final long row, final long column) {
+	private boolean isLocationInCell(final PickSegment pickSegment, final PickLocationViewDO pickLocationViewDO, final long row, final long column) {
 
 		return true;
 	}
