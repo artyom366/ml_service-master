@@ -3,6 +3,8 @@ package ml.cluster.service;
 import ml.cluster.datastructure.FixedRadiusMatrix;
 import ml.cluster.datastructure.MatrixCell;
 import ml.cluster.datastructure.PickSegment;
+import ml.cluster.error.CellNoAreaSpecifiedException;
+import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -18,7 +20,7 @@ import java.util.stream.Stream;
 public class MatrixServiceImpl implements MatrixService {
 
     @Override
-    public Map<PickSegment, List<PickLocationViewDO>> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) {
+    public Map<PickSegment, List<PickLocationViewDO>> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) throws MatrixNoAreaSpecifiedException, CellNoAreaSpecifiedException {
         Validate.notEmpty(pickLocationViewDOs, "Pick locations are not defined");
 
         final Map<String, List<PickLocationViewDO>> segmentGroups = groupByLine(pickLocationViewDOs);
@@ -54,21 +56,35 @@ public class MatrixServiceImpl implements MatrixService {
         return Collections.unmodifiableMap(pickSegments);
     }
 
-    protected void generateSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
-        pickSegments.forEach((segment, locations) -> {
+    protected void generateSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixNoAreaSpecifiedException, CellNoAreaSpecifiedException {
+        for (final PickSegment segment : pickSegments.keySet()) {
 
             final double matrixHeight = segment.getMaxY() - segment.getMinY();
             final double matrixWidth = segment.getMaxX() - segment.getMinX();
+            validateMatrixSize(matrixHeight, matrixWidth);
 
             final FixedRadiusMatrix matrix = new FixedRadiusMatrix.MatrixBuilder()
                     .height(matrixHeight)
                     .width(matrixWidth)
                     .build();
 
+            validateCellSize(matrix);
+
             segment.setMatrix(matrix);
             generateSegments(segment, 0, 0, 0L, 0L);
+        }
+    }
 
-        });
+    private void validateMatrixSize(final double matrixHeight, final double matrixWidth) throws MatrixNoAreaSpecifiedException {
+        if (matrixHeight == 0 || matrixWidth == 0) {
+            throw new MatrixNoAreaSpecifiedException(matrixWidth, matrixHeight);
+        }
+    }
+
+    private void validateCellSize(final FixedRadiusMatrix matrix) throws CellNoAreaSpecifiedException {
+        if (matrix.getCellHeight() == 0 || matrix.getCellWidth() == 0) {
+            throw new CellNoAreaSpecifiedException(matrix.getCellWidth(), matrix.getCellHeight());
+        }
     }
 
     protected void generateSegments(final PickSegment segment, final double currentHeight, final double currentWidth, final long currentRow, final long currentColumn) {
