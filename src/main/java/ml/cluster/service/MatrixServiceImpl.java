@@ -114,7 +114,7 @@ public class MatrixServiceImpl implements MatrixService {
         });
     }
 
-    protected boolean isLocationInCell(final PickLocationViewDO location, final MatrixCell cell) {
+    private boolean isLocationInCell(final PickLocationViewDO location, final MatrixCell cell) {
         return location.getX() < cell.getMaxX() && location.getX() > cell.getMinX() && location.getY() < cell.getMaxY() && location.getY() > cell.getMinY();
     }
 
