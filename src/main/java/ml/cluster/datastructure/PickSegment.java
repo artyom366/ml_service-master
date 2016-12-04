@@ -72,4 +72,39 @@ public final class PickSegment {
                ", matrix=" + matrix +
                '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PickSegment that = (PickSegment) o;
+
+        if (Double.compare(that.maxX, maxX) != 0) return false;
+        if (Double.compare(that.minX, minX) != 0) return false;
+        if (Double.compare(that.maxY, maxY) != 0) return false;
+        if (Double.compare(that.minY, minY) != 0) return false;
+        if (!line.equals(that.line)) return false;
+        if (!pickLocationViewDOs.equals(that.pickLocationViewDOs)) return false;
+        return matrix != null ? matrix.equals(that.matrix) : that.matrix == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(maxX);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(minX);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(maxY);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(minY);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + line.hashCode();
+        result = 31 * result + pickLocationViewDOs.hashCode();
+        result = 31 * result + (matrix != null ? matrix.hashCode() : 0);
+        return result;
+    }
 }

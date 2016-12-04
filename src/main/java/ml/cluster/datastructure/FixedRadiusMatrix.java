@@ -1,108 +1,136 @@
 package ml.cluster.datastructure;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.Map;
 import java.util.TreeMap;
 
 public final class FixedRadiusMatrix {
 
-	private final double radius;
-	private final double verticalCoefficient;
-	private final double horizontalCoefficient;
-	private final long rows;
-	private final long columns;
-	private final Map<Integer, MatrixCell> segmentPickCells;
+    private final double matrixHeight;
+    private final double matrixWidth;
+    private final double cellHeight;
+    private final double cellWidth;
+    private final double radius;
+    private final double verticalCoefficient;
+    private final double horizontalCoefficient;
+    private final Map<Pair<Long, Long>, MatrixCell> segmentPickCells;
+    private long rows;
+    private long columns;
 
-	private FixedRadiusMatrix(final MatrixBuilder matrixBuilder) {
-		this.radius = matrixBuilder.radius;
-		this.verticalCoefficient = matrixBuilder.verticalCoefficient;
-		this.horizontalCoefficient = matrixBuilder.horizontalCoefficient;
-		this.rows = matrixBuilder.rows;
-		this.columns = matrixBuilder.columns;
-		this.segmentPickCells = matrixBuilder.segmentPickCells;
-	}
+    private FixedRadiusMatrix(final MatrixBuilder matrixBuilder) {
+        this.radius = matrixBuilder.radius;
+        this.verticalCoefficient = matrixBuilder.verticalCoefficient;
+        this.horizontalCoefficient = matrixBuilder.horizontalCoefficient;
+        this.segmentPickCells = matrixBuilder.segmentPickCells;
+        this.matrixHeight = matrixBuilder.matrixHeight;
+        this.matrixWidth = matrixBuilder.matrixWidth;
+        this.cellHeight = setCellHeight();
+        this.cellWidth = setCellWidth();
+    }
 
-	public double getRadius() {
-		return radius;
-	}
+    private double setCellHeight() {
+        final double cellHeightRatio = this.radius * this.verticalCoefficient;
+        return cellHeightRatio > 0 ? this.matrixHeight / cellHeightRatio : 0;
+    }
 
-	public double getVerticalCoefficient() {
-		return verticalCoefficient;
-	}
+    private double setCellWidth() {
+        final double cellWidthRatio = this.radius * this.horizontalCoefficient;
+        return cellWidthRatio > 0 ? this.matrixWidth / cellWidthRatio : 0;
+    }
 
-	public double getHorizontalCoefficient() {
-		return horizontalCoefficient;
-	}
+    public double getMatrixHeight() {
+        return matrixHeight;
+    }
 
-	public long getRows() {
-		return rows;
-	}
+    public double getMatrixWidth() {
+        return matrixWidth;
+    }
 
-	public long getColumns() {
-		return columns;
-	}
+    public double getCellHeight() {
+        return cellHeight;
+    }
 
-	public Map<Integer, MatrixCell> getSegmentPickCells() {
-		return segmentPickCells;
-	}
+    public double getCellWidth() {
+        return cellWidth;
+    }
 
-	public void addToSegmentPickLocations(final MatrixCell matrixCell) {
-		this.segmentPickCells.put(this.segmentPickCells.size(), matrixCell);
-	}
+    public double getRadius() {
+        return radius;
+    }
 
-	public double getCellHeightRatio() {
-		return this.radius * this.verticalCoefficient;
-	}
+    public double getVerticalCoefficient() {
+        return verticalCoefficient;
+    }
 
-	public double getCellWidthRatio() {
-		return this.radius * this.horizontalCoefficient;
-	}
+    public double getHorizontalCoefficient() {
+        return horizontalCoefficient;
+    }
 
-	public static class MatrixBuilder {
+    public long getRows() {
+        return rows;
+    }
 
-		private double radius = 5;
-		private double verticalCoefficient = 1;
-		private double horizontalCoefficient = 1;
-		private long rows;
-		private long columns;
-		private final Map<Integer, MatrixCell> segmentPickCells;
+    public long getColumns() {
+        return columns;
+    }
 
-		public MatrixBuilder() {
-			this.segmentPickCells = new TreeMap<>();
-		}
+    public Map<Pair<Long, Long>, MatrixCell> getSegmentPickCells() {
+        return segmentPickCells;
+    }
 
-		public MatrixBuilder radius(final double radius) {
-			this.radius = radius;
-			return this;
-		}
+    public void addToSegmentPickLocations(final Pair<Long, Long> coordinates, final MatrixCell matrixCell) {
+        this.segmentPickCells.put(coordinates, matrixCell);
+        this.rows = coordinates.getLeft();
+        this.columns = coordinates.getRight();
+    }
 
-		public MatrixBuilder verticalCoefficient(final double verticalCoefficient) {
-			this.verticalCoefficient = verticalCoefficient;
-			return this;
-		}
+    public final static class MatrixBuilder {
 
-		public MatrixBuilder horizontalCoefficient(final double horizontalCoefficient) {
-			this.horizontalCoefficient = horizontalCoefficient;
-			return this;
-		}
+        private double radius = 5;
+        private double verticalCoefficient = 1;
+        private double horizontalCoefficient = 1;
+        private final Map<Pair<Long, Long>, MatrixCell> segmentPickCells;
+        private double matrixHeight;
+        private double matrixWidth;
 
-		public MatrixBuilder rows(final long rows) {
-			this.rows = rows;
-			return this;
-		}
+        public MatrixBuilder() {
+            this.segmentPickCells = new TreeMap<>();
+        }
 
-		public MatrixBuilder columns(final long columns) {
-			this.columns = columns;
-			return this;
-		}
+        public MatrixBuilder radius(final double radius) {
+            this.radius = radius;
+            return this;
+        }
 
-		public FixedRadiusMatrix build() {
-			return new FixedRadiusMatrix(this);
-		}
-	}
+        public MatrixBuilder verticalCoefficient(final double verticalCoefficient) {
+            this.verticalCoefficient = verticalCoefficient;
+            return this;
+        }
 
-	@Override
-	public String toString() {
-		return "FixedRadiusMatrix {" + "radius=" + radius + ", verticalCoefficient=" + verticalCoefficient + ", horizontalCoefficient=" + horizontalCoefficient
-			+ ", rows=" + rows + ", columns=" + columns + ", segmentPickCells=" + segmentPickCells + '}';
-	}
+        public MatrixBuilder horizontalCoefficient(final double horizontalCoefficient) {
+            this.horizontalCoefficient = horizontalCoefficient;
+            return this;
+        }
+
+        public MatrixBuilder height(final double height) {
+            this.matrixHeight = height;
+            return this;
+        }
+
+        public MatrixBuilder width(final double width) {
+            this.matrixWidth = width;
+            return this;
+        }
+
+        public FixedRadiusMatrix build() {
+            return new FixedRadiusMatrix(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "FixedRadiusMatrix {" + "radius=" + radius + ", verticalCoefficient=" + verticalCoefficient + ", horizontalCoefficient=" + horizontalCoefficient
+                + ", rows=" + rows + ", columns=" + columns + ", segmentPickCells=" + segmentPickCells + '}';
+    }
 }
