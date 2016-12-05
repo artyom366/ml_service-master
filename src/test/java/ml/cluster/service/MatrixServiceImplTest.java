@@ -8,6 +8,12 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 
+import ml.cluster.datastructure.FixedRadiusMatrix;
+import ml.cluster.datastructure.MatrixCell;
+import ml.cluster.error.CellNoAreaSpecifiedException;
+import ml.cluster.error.MatrixNoAreaSpecifiedException;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -20,7 +26,8 @@ import ml.cluster.to.PickLocationViewDO;
 public class MatrixServiceImplTest {
 
 	private final static int NUMBER_OF_LOCATIONS = 50;
-	private final static int NUMBER_OF_LOCATION_IN_GROUP = 10;
+	private final static int NUMBER_OF_LOCATIONS_IN_GROUP = 10;
+	private final static int NUMBER_OF_LOCATIONS_IN_MATRIX = 200;
 
 	@Spy
 	private MatrixServiceImpl matrixService;
@@ -39,7 +46,7 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testDefineSegmentBoundaries() {
-        final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATION_IN_GROUP);
+        final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS_IN_GROUP);
 
         final Map<PickSegment, List<PickLocationViewDO>> result = matrixService.defineSegmentBoundaries(segmentGroups);
         assertThat(result, is(notNullValue()));
@@ -54,7 +61,7 @@ public class MatrixServiceImplTest {
 			final double minX = xStats.getMin();
 			final double maxX = xStats.getMax();
 
-			assertThat(locations.size(), is(NUMBER_OF_LOCATION_IN_GROUP));
+			assertThat(locations.size(), is(NUMBER_OF_LOCATIONS_IN_GROUP));
 			assertThat(segment.getMaxX(), is(maxX));
 			assertThat(segment.getMinX(), is(minX));
 			assertThat(segment.getMaxY(), is(maxY));
@@ -63,11 +70,43 @@ public class MatrixServiceImplTest {
 		});
     }
 
-	@Test
-	public void testGenerateSegmentMatrix() {
+	@Ignore
+	public void testGenerateSegmentMatrix() throws MatrixNoAreaSpecifiedException, CellNoAreaSpecifiedException {
+        final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS_IN_MATRIX);
+        final Map<PickSegment, List<PickLocationViewDO>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 
+        matrixService.generateSegmentMatrix(pickSegments);
+        assertThat(pickSegments, is(notNullValue()));
+        assertThat(pickSegments.size() > 0, is(true));
 
+        pickSegments.forEach((segment, locations) -> {
+            final FixedRadiusMatrix matrix = segment.getMatrix();
 
-	}
+            final double matrixWidth = matrix.getMatrixWidth();
+            final double matrixHeight = matrix.getMatrixHeight();
 
+            final double cellWidth = matrix.getCellWidth();
+            final double cellHeight = matrix.getCellHeight();
+
+            final long columns = matrix.getColumns();
+            final long rows = matrix.getRows();
+
+            assertThat(matrixWidth <= cellWidth * columns, is(true));
+            assertThat(matrixHeight <= cellHeight * rows, is(true));
+
+            final Map<Pair<Long, Long>, MatrixCell> cells = matrix.getSegmentPickCells();
+
+            assertThat(cells, is(notNullValue()));
+            assertThat(cells.size(), is(rows * columns));
+
+            cells.forEach((position, cell) -> {
+                final List<PickLocationViewDO> cellLocations = cell.getLocations();
+                cellLocations.forEach(cellLocation -> {
+                    final Double x = cellLocation.getX();
+                    final Double y = cellLocation.getY();
+                    assertThat(x <= cell.getMaxX() && x >= cell.getMinX() && y <= cell.getMaxY() && y >= cell.getMinY(), is(true));
+                });
+            });
+        });
+    }
 }

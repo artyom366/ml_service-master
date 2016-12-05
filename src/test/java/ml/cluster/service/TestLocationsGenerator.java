@@ -22,8 +22,7 @@ public class TestLocationsGenerator {
         IntStream.range(0, quantity).forEach(item -> {
             final PickLocationViewDO location = new PickLocationViewDO();
             location.setLine(LINES[RandomGenerator.generateUniformInt(LINES.length)]);
-            location.setX(RandomGenerator.generateUniformDouble(MAX_Y_AXIS_VALUE));
-            location.setY(RandomGenerator.generateUniformDouble(MAX_X_AXIS_VALUE));
+            setCoordinate(location);
             locations.add(location);
         });
 
@@ -37,12 +36,16 @@ public class TestLocationsGenerator {
         IntStream.range(0, quantity).forEach(item -> {
             final PickLocationViewDO location = new PickLocationViewDO();
             location.setLine(LINES[0]);
-            location.setX(RandomGenerator.generateUniformDouble(MAX_Y_AXIS_VALUE));
-            location.setY(RandomGenerator.generateUniformDouble(MAX_X_AXIS_VALUE));
+            setCoordinate(location);
             locations.add(location);
         });
 
         groupedLocations.put(LINES[0], locations);
         return Collections.unmodifiableMap(groupedLocations);
+    }
+
+    private static void setCoordinate(final PickLocationViewDO location) {
+        location.setX(RandomGenerator.generateUniformDouble(MAX_Y_AXIS_VALUE));
+        location.setY(RandomGenerator.generateUniformDouble(MAX_X_AXIS_VALUE));
     }
 }
