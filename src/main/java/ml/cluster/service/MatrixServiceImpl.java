@@ -41,9 +41,8 @@ public class MatrixServiceImpl implements MatrixService {
         final Map<PickSegment, List<PickLocationViewDO>> pickSegments = new HashMap<>();
 
         segmentGroups.forEach((line, pickLocations) -> {
-            final Stream<PickLocationViewDO> stream = pickLocations.stream();
-            final DoubleSummaryStatistics xStats = stream.mapToDouble(PickLocationViewDO::getX).summaryStatistics();
-            final DoubleSummaryStatistics yStats = stream.mapToDouble(PickLocationViewDO::getY).summaryStatistics();
+            final DoubleSummaryStatistics xStats = pickLocations.stream().mapToDouble(PickLocationViewDO::getX).summaryStatistics();
+            final DoubleSummaryStatistics yStats = pickLocations.stream().mapToDouble(PickLocationViewDO::getY).summaryStatistics();
 
             final double minY = yStats.getMin();
             final double maxY = yStats.getMax();

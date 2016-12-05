@@ -30,10 +30,19 @@ public class TestLocationsGenerator {
         return Collections.unmodifiableList(locations);
     }
 
-    public static Map<String, List<PickLocationViewDO>> generateGrouped() {
-        final Map<String, List<PickLocationViewDO>> segmentGroup = new HashMap<>();
+    public static Map<String, List<PickLocationViewDO>> generateGrouped(final int quantity) {
+        final List<PickLocationViewDO> locations = new ArrayList<>();
+        final Map<String, List<PickLocationViewDO>> groupedLocations = new HashMap<>();
 
+        IntStream.range(0, quantity).forEach(item -> {
+            final PickLocationViewDO location = new PickLocationViewDO();
+            location.setLine(LINES[0]);
+            location.setX(RandomGenerator.generateUniformDouble(MAX_Y_AXIS_VALUE));
+            location.setY(RandomGenerator.generateUniformDouble(MAX_X_AXIS_VALUE));
+            locations.add(location);
+        });
 
-        return segmentGroup;
+        groupedLocations.put(LINES[0], locations);
+        return Collections.unmodifiableMap(groupedLocations);
     }
 }
