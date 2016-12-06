@@ -1,19 +1,19 @@
 package ml.cluster.datastructure;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class FixedRadiusMatrix {
 
 	private final double matrixHeight;
 	private final double matrixWidth;
-	private final double cellHeight;
-	private final double cellWidth;
-	private final double radius;
-	private final double verticalCoefficient;
-	private final double horizontalCoefficient;
+	private final long cellHeight;
+	private final long cellWidth;
+	private final long radius;
+	private final long verticalCoefficient;
+	private final long horizontalCoefficient;
 	private final Map<Pair<Long, Long>, MatrixCell> segmentPickCells;
 	private final long rows;
 	private final long columns;
@@ -31,11 +31,11 @@ public final class FixedRadiusMatrix {
 		this.columns = setColumns();
 	}
 
-	private double setCellHeight() {
+	private long setCellHeight() {
 		return this.radius * this.verticalCoefficient;
 	}
 
-	private double setCellWidth() {
+	private long setCellWidth() {
 		return this.radius * this.horizontalCoefficient;
 	}
 
@@ -55,23 +55,23 @@ public final class FixedRadiusMatrix {
 		return matrixWidth;
 	}
 
-	public double getCellHeight() {
+	public long getCellHeight() {
 		return cellHeight;
 	}
 
-	public double getCellWidth() {
+	public long getCellWidth() {
 		return cellWidth;
 	}
 
-	public double getRadius() {
+	public long getRadius() {
 		return radius;
 	}
 
-	public double getVerticalCoefficient() {
+	public long getVerticalCoefficient() {
 		return verticalCoefficient;
 	}
 
-	public double getHorizontalCoefficient() {
+	public long getHorizontalCoefficient() {
 		return horizontalCoefficient;
 	}
 
@@ -93,9 +93,9 @@ public final class FixedRadiusMatrix {
 
 	public final static class MatrixBuilder {
 
-		private double radius = 5;
-		private double verticalCoefficient = 1;
-		private double horizontalCoefficient = 1;
+		private long radius = 5;
+		private long verticalCoefficient = 1;
+		private long horizontalCoefficient = 1;
 		private final Map<Pair<Long, Long>, MatrixCell> segmentPickCells;
 		private double matrixHeight;
 		private double matrixWidth;
@@ -104,17 +104,17 @@ public final class FixedRadiusMatrix {
 			this.segmentPickCells = new TreeMap<>();
 		}
 
-		public MatrixBuilder radius(final double radius) {
+		public MatrixBuilder radius(final long radius) {
 			this.radius = radius;
 			return this;
 		}
 
-		public MatrixBuilder verticalCoefficient(final double verticalCoefficient) {
+		public MatrixBuilder verticalCoefficient(final long verticalCoefficient) {
 			this.verticalCoefficient = verticalCoefficient;
 			return this;
 		}
 
-		public MatrixBuilder horizontalCoefficient(final double horizontalCoefficient) {
+		public MatrixBuilder horizontalCoefficient(final long horizontalCoefficient) {
 			this.horizontalCoefficient = horizontalCoefficient;
 			return this;
 		}

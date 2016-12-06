@@ -8,8 +8,8 @@ import java.util.stream.IntStream;
 
 public class TestLocationsGenerator {
 
-    private final static int MAX_Y_AXIS_VALUE = 100;
-    private final static int MAX_X_AXIS_VALUE = 100;
+    private final static int MAX_Y_AXIS_VALUE = 10;
+    private final static int MAX_X_AXIS_VALUE = 10;
     private final static String[] LINES = {"AA", "BB", "CC"};
 
     public static int getLocationLinesQuantity() {

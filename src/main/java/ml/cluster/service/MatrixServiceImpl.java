@@ -1,25 +1,19 @@
 package ml.cluster.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.DoubleSummaryStatistics;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.stereotype.Service;
-
 import ml.cluster.datastructure.FixedRadiusMatrix;
 import ml.cluster.datastructure.MatrixCell;
 import ml.cluster.datastructure.PickSegment;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 @Service("matrixService")
 public class MatrixServiceImpl implements MatrixService {
@@ -93,14 +87,14 @@ public class MatrixServiceImpl implements MatrixService {
 
     protected void generateSegments(final PickSegment segment, final double currentHeight, final double currentWidth, final long currentRow, final long currentColumn) {
 
-        if (segment.getMatrix().getMatrixHeight() < currentHeight && segment.getMatrix().getMatrixWidth() < currentWidth) {
+        if (segment.getMatrix().getRows() > currentRow) {
 
-            if (segment.getMatrix().getMatrixWidth() < currentWidth) {
+            if (segment.getMatrix().getColumns() > currentColumn) {
                 createMatrixCell(segment, currentRow, currentColumn);
                 generateSegments(segment, currentHeight, currentWidth + segment.getMatrix().getCellWidth(), currentRow, currentColumn + 1);
 
-            } else if (segment.getMatrix().getMatrixHeight() < currentHeight) {
-                createMatrixCell(segment, currentRow, currentColumn);
+            } else if (segment.getMatrix().getRows() > currentRow + 1) {
+                createMatrixCell(segment, currentRow, 0);
                 generateSegments(segment, currentHeight + segment.getMatrix().getCellHeight(), 0, currentRow + 1, 0);
             }
         }
@@ -108,10 +102,10 @@ public class MatrixServiceImpl implements MatrixService {
 
     protected void createMatrixCell(final PickSegment segment, final long currentRow, final long currentColumn) {
 
-        final double cellMinX = segment.getMinX() + currentColumn * segment.getMatrix().getCellWidth();
-        final double cellMaxX = cellMinX + segment.getMatrix().getCellWidth();
-        final double cellMinY = segment.getMinY() + currentRow * segment.getMatrix().getCellHeight();
-        final double cellMaxY = cellMinY + segment.getMatrix().getCellHeight();
+        final long cellMinX = (long) segment.getMinX() + currentColumn * segment.getMatrix().getCellWidth();
+        final long cellMaxX = cellMinX + segment.getMatrix().getCellWidth();
+        final long cellMinY = (long) segment.getMinY() + currentRow * segment.getMatrix().getCellHeight();
+        final long cellMaxY = cellMinY + segment.getMatrix().getCellHeight();
 
         final MatrixCell cell = new MatrixCell(cellMaxX, cellMinX, cellMaxY, cellMinY);
         segment.getMatrix().addToSegmentPickLocations(new ImmutablePair<>(currentRow, currentColumn), cell);

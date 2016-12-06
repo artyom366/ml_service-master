@@ -8,14 +8,14 @@ import java.util.List;
 
 public final class MatrixCell {
 
-    private final double maxX;
-    private final double minX;
-    private final double maxY;
-    private final double minY;
+    private final long maxX;
+    private final long minX;
+    private final long maxY;
+    private final long minY;
     private final List<PickLocationViewDO> locations;
     private final List<Pair<Long, Long>> neighboringCells;
 
-    public MatrixCell(final double maxX, final double minX, final double maxY, final double minY) {
+    public MatrixCell(final long maxX, final long minX, final long maxY, final long minY) {
         this.maxX = maxX;
         this.minX = minX;
         this.maxY = maxY;
@@ -44,19 +44,19 @@ public final class MatrixCell {
         this.neighboringCells.addAll(neighbors);
     }
 
-    public double getMaxX() {
+    public long getMaxX() {
         return maxX;
     }
 
-    public double getMinX() {
+    public long getMinX() {
         return minX;
     }
 
-    public double getMaxY() {
+    public long getMaxY() {
         return maxY;
     }
 
-    public double getMinY() {
+    public long getMinY() {
         return minY;
     }
 
