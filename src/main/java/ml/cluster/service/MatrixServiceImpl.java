@@ -1,19 +1,25 @@
 package ml.cluster.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.DoubleSummaryStatistics;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Service;
+
 import ml.cluster.datastructure.FixedRadiusMatrix;
 import ml.cluster.datastructure.MatrixCell;
 import ml.cluster.datastructure.PickSegment;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 @Service("matrixService")
 public class MatrixServiceImpl implements MatrixService {
@@ -29,7 +35,7 @@ public class MatrixServiceImpl implements MatrixService {
         assignPickLocationsToMatrixCells(pickSegments);
         assignNeighboringMatrixCells(pickSegments);
 
-        return pickSegments;
+        return Collections.unmodifiableMap(pickSegments);
     }
 
     protected Map<String, List<PickLocationViewDO>> groupByLine(final List<PickLocationViewDO> pickLocations) {
@@ -85,7 +91,7 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    protected void generateSegments(final PickSegment segment, final double currentHeight, final double currentWidth, final long currentRow, final long currentColumn) {
+    private void generateSegments(final PickSegment segment, final double currentHeight, final double currentWidth, final long currentRow, final long currentColumn) {
 
         if (segment.getMatrix().getRows() > currentRow) {
 
@@ -100,7 +106,7 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    protected void createMatrixCell(final PickSegment segment, final long currentRow, final long currentColumn) {
+    private void createMatrixCell(final PickSegment segment, final long currentRow, final long currentColumn) {
 
         final long cellMinX = (long) segment.getMinX() + currentColumn * segment.getMatrix().getCellWidth();
         final long cellMaxX = cellMinX + segment.getMatrix().getCellWidth();
@@ -116,20 +122,20 @@ public class MatrixServiceImpl implements MatrixService {
 
             final Map<Pair<Long, Long>, MatrixCell> segmentPickCells = segment.getMatrix().getSegmentPickCells();
 
-            locations.forEach(location -> {
+            segmentPickCells.forEach((coordinates, cell) -> {
 
-                segmentPickCells.forEach((coordinates, cell) -> {
-
+                locations.forEach(location -> {
                     if (isLocationInCell(location, cell)) {
                         cell.addToPickLocations(location);
                     }
                 });
+
             });
         });
     }
 
     private boolean isLocationInCell(final PickLocationViewDO location, final MatrixCell cell) {
-        return location.getX() < cell.getMaxX() && location.getX() > cell.getMinX() && location.getY() < cell.getMaxY() && location.getY() > cell.getMinY();
+        return location.getX() < cell.getMaxX() && location.getX() >= cell.getMinX() && location.getY() < cell.getMaxY() && location.getY() >= cell.getMinY();
     }
 
     protected void assignNeighboringMatrixCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
@@ -151,20 +157,26 @@ public class MatrixServiceImpl implements MatrixService {
         });
     }
 
-    private List<Pair<Long, Long>> getPotentialNeighbors(final long row, final long column) {
+    private List<Pair<Long, Long>> getPotentialNeighbors(final long baseRow, final long baseColumn) {
         final List<Pair<Long, Long>> neighbors = new ArrayList<>();
 
         LongStream.range(-1, 2).forEach(rowIndex -> {
             LongStream.range(-1, 2).forEach(columnIndex -> {
-                neighbors.add(new ImmutablePair<>(row + rowIndex, column + columnIndex));
+                addNewNeighbor(neighbors, baseRow, baseColumn, rowIndex, columnIndex);
             });
         });
 
-        return neighbors;
+        return Collections.unmodifiableList(neighbors);
+    }
+
+    private void addNewNeighbor(final List<Pair<Long, Long>> neighbors, final long baseRow, final long baseColumn, final long rowIndex, final long columnIndex) {
+        if (!(rowIndex == 0 && columnIndex == 0)) {
+            neighbors.add(new ImmutablePair<>(baseRow + rowIndex, baseColumn + columnIndex));
+        }
     }
 
     private List<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> neighbors, final long maxRow, final long maxColumn) {
-        return neighbors.stream().filter(neighbor -> isValidNeighbor(neighbor, maxRow, maxColumn)).collect(Collectors.toList());
+        return Collections.unmodifiableList(neighbors.stream().filter(neighbor -> isValidNeighbor(neighbor, maxRow, maxColumn)).collect(Collectors.toList()));
     }
 
     private boolean isValidNeighbor(final Pair<Long, Long> neighbor, final long maxRow, final long maxColumn) {
