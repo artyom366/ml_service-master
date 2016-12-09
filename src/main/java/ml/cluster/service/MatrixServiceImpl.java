@@ -7,16 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
-import ml.cluster.datastructure.FixedRadiusMatrix;
-import ml.cluster.datastructure.MatrixCell;
-import ml.cluster.datastructure.PickSegment;
+import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
+import ml.cluster.datastructure.matrix.MatrixCell;
+import ml.cluster.datastructure.matrix.PickSegment;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
@@ -160,11 +159,11 @@ public class MatrixServiceImpl implements MatrixService {
     private List<Pair<Long, Long>> getPotentialNeighbors(final long baseRow, final long baseColumn) {
         final List<Pair<Long, Long>> neighbors = new ArrayList<>();
 
-        LongStream.range(-1, 2).forEach(rowIndex -> {
-            LongStream.range(-1, 2).forEach(columnIndex -> {
-                addNewNeighbor(neighbors, baseRow, baseColumn, rowIndex, columnIndex);
-            });
-        });
+        for (long row = -1; row < 2; row++) {
+            for (long column = -1; column < 2; column++) {
+                addNewNeighbor(neighbors, baseRow, baseColumn, row, column);
+            }
+        }
 
         return Collections.unmodifiableList(neighbors);
     }

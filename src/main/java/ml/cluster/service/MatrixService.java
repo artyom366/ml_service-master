@@ -1,6 +1,6 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.PickSegment;
+import ml.cluster.datastructure.matrix.PickSegment;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;

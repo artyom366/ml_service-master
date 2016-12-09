@@ -1,4 +1,4 @@
-package ml.cluster.datastructure;
+package ml.cluster.datastructure.matrix;
 
 import org.apache.commons.lang3.tuple.Pair;
 

@@ -8,8 +8,8 @@ import java.util.Collection;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,9 +18,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ml.cluster.datastructure.FixedRadiusMatrix;
-import ml.cluster.datastructure.MatrixCell;
-import ml.cluster.datastructure.PickSegment;
+import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
+import ml.cluster.datastructure.matrix.MatrixCell;
+import ml.cluster.datastructure.matrix.PickSegment;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
@@ -153,20 +153,56 @@ public class MatrixServiceImplTest {
 		matrixService.assignPickLocationsToMatrixCells(pickSegments);
 		matrixService.assignNeighboringMatrixCells(pickSegments);
 
-		pickSegments.forEach((segment, locations) -> {
-			final FixedRadiusMatrix matrix = segment.getMatrix();
-			final Map<Pair<Long, Long>, MatrixCell> cells = matrix.getSegmentPickCells();
+		final Set<PickSegment> key = pickSegments.keySet();
+		final PickSegment segment = key.iterator().next();
+		final FixedRadiusMatrix matrix = segment.getMatrix();
+		final Map<Pair<Long, Long>, MatrixCell> cells = matrix.getSegmentPickCells();
 
-			cells.forEach((position, cell) -> {
+		final MatrixCell cell0 = cells.get(new ImmutablePair<>(0L, 0L));
+		final List<Pair<Long, Long>> neighboringCells0 = cell0.getNeighboringCells();
+		assertThat(neighboringCells0.size() == 3, is(true));
 
+		final Pair<Long, Long> cell0Neighbor0 = neighboringCells0.get(0);
+		final Pair<Long, Long> cell0Neighbor1 = neighboringCells0.get(1);
+		final Pair<Long, Long> cell0Neighbor2 = neighboringCells0.get(2);
+		assertThat(cell0Neighbor0.getLeft() == 0 && cell0Neighbor0.getRight() == 1, is(true));
+		assertThat(cell0Neighbor1.getLeft() == 1 && cell0Neighbor1.getRight() == 0, is(true));
+		assertThat(cell0Neighbor2.getLeft() == 1 && cell0Neighbor2.getRight() == 1, is(true));
 
-				LongStream.range(0, matrix.getRows()).forEach(row -> {
-					LongStream.range(0, matrix.getColumns()).forEach(column -> {
+		final MatrixCell cell1 = cells.get(new ImmutablePair<>(0L, 1L));
+		final List<Pair<Long, Long>> neighboringCells1 = cell1.getNeighboringCells();
+		assertThat(neighboringCells1.size() == 5, is(true));
 
+		final Pair<Long, Long> cell1Neighbor0 = neighboringCells1.get(0);
+		final Pair<Long, Long> cell1Neighbor1 = neighboringCells1.get(1);
+		final Pair<Long, Long> cell1Neighbor2 = neighboringCells1.get(2);
+		final Pair<Long, Long> cell1Neighbor3 = neighboringCells1.get(3);
+		final Pair<Long, Long> cell1Neighbor4 = neighboringCells1.get(4);
+		assertThat(cell1Neighbor0.getLeft() == 0 && cell1Neighbor0.getRight() == 0, is(true));
+		assertThat(cell1Neighbor1.getLeft() == 0 && cell1Neighbor1.getRight() == 2, is(true));
+		assertThat(cell1Neighbor2.getLeft() == 1 && cell1Neighbor2.getRight() == 0, is(true));
+		assertThat(cell1Neighbor3.getLeft() == 1 && cell1Neighbor3.getRight() == 1, is(true));
+		assertThat(cell1Neighbor4.getLeft() == 1 && cell1Neighbor4.getRight() == 2, is(true));
 
-					});
-				});
-			});
-		});
+		final MatrixCell cell4 = cells.get(new ImmutablePair<>(1L, 1L));
+		final List<Pair<Long, Long>> neighboringCells4 = cell4.getNeighboringCells();
+		assertThat(neighboringCells4.size() == 8, is(true));
+
+		final Pair<Long, Long> cell4Neighbor0 = neighboringCells4.get(0);
+		final Pair<Long, Long> cell4Neighbor1 = neighboringCells4.get(1);
+		final Pair<Long, Long> cell4Neighbor2 = neighboringCells4.get(2);
+		final Pair<Long, Long> cell4Neighbor3 = neighboringCells4.get(3);
+		final Pair<Long, Long> cell4Neighbor4 = neighboringCells4.get(4);
+		final Pair<Long, Long> cell4Neighbor5 = neighboringCells4.get(5);
+		final Pair<Long, Long> cell4Neighbor6 = neighboringCells4.get(6);
+		final Pair<Long, Long> cell4Neighbor7 = neighboringCells4.get(7);
+		assertThat(cell4Neighbor0.getLeft() == 0 && cell4Neighbor0.getRight() == 0, is(true));
+		assertThat(cell4Neighbor1.getLeft() == 0 && cell4Neighbor1.getRight() == 1, is(true));
+		assertThat(cell4Neighbor2.getLeft() == 0 && cell4Neighbor2.getRight() == 2, is(true));
+		assertThat(cell4Neighbor3.getLeft() == 1 && cell4Neighbor3.getRight() == 0, is(true));
+		assertThat(cell4Neighbor4.getLeft() == 1 && cell4Neighbor4.getRight() == 2, is(true));
+		assertThat(cell4Neighbor5.getLeft() == 2 && cell4Neighbor5.getRight() == 0, is(true));
+		assertThat(cell4Neighbor6.getLeft() == 2 && cell4Neighbor6.getRight() == 1, is(true));
+		assertThat(cell4Neighbor7.getLeft() == 2 && cell4Neighbor7.getRight() == 2, is(true));
 	}
 }

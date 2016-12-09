@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d7583155-7ccd-4499-b767-1b31e78b1690" name="Default" comment="matrix unit tests">
+    <list default="true" id="d7583155-7ccd-4499-b767-1b31e78b1690" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Optics.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Point.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixService.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java" afterPath="$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/ml/cluster/service/TestLocationsGenerator.java" afterPath="$PROJECT_DIR$/src/test/java/ml/cluster/service/TestLocationsGenerator.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/FixedRadiusMatrix.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/MatrixCell.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/MatrixCell.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/PickSegment.java" afterPath="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/PickSegment.java" />
     </list>
     <ignored path="ml_service.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -35,23 +43,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="OpticsServiceImplTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/ml/cluster/service/OpticsServiceImplTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="34" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="MatrixServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="952">
-              <caret line="173" column="74" selection-start-line="173" selection-start-column="74" selection-end-line="173" selection-end-column="74" />
+            <state relative-caret-position="132">
+              <caret line="68" column="73" selection-start-line="68" selection-start-column="73" selection-end-line="68" selection-end-column="73" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -59,21 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MatrixServiceImplTest.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MatrixServiceImplTest.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="68" column="52" selection-start-line="68" selection-start-column="52" selection-end-line="68" selection-end-column="52" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MatrixService.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+            <state relative-caret-position="340">
+              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -81,15 +67,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MatrixCell.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/MatrixCell.java">
+      <file leaf-file-name="PickSegment.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/PickSegment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-              <folding>
-                <element signature="e#1016#1017#0" expanded="true" />
-                <element signature="e#1070#1071#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="187">
+              <caret line="16" column="53" selection-start-line="16" selection-start-column="53" selection-end-line="16" selection-end-column="53" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -97,35 +80,23 @@
       <file leaf-file-name="PickLocationViewDO.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="464">
-              <caret line="55" column="28" selection-start-line="55" selection-start-column="28" selection-end-line="55" selection-end-column="28" />
+            <state relative-caret-position="4352">
+              <caret line="352" column="35" selection-start-line="352" selection-start-column="35" selection-end-line="352" selection-end-column="35" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="FixedRadiusMatrix.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/FixedRadiusMatrix.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1020">
-              <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
+            <state relative-caret-position="28">
+              <caret line="93" column="29" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="29" />
               <folding>
-                <element signature="e#2198#2199#0" expanded="true" />
-                <element signature="e#2255#2256#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TestLocationsGenerator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/java/ml/cluster/service/TestLocationsGenerator.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="373">
-              <caret line="51" column="75" selection-start-line="51" selection-start-column="59" selection-end-line="51" selection-end-column="75" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#536#537#0" expanded="true" />
-                <element signature="e#571#572#0" expanded="true" />
+                <element signature="e#2068#2069#0" expanded="true" />
+                <element signature="e#2098#2099#0" expanded="true" />
+                <element signature="e#2573#2574#0" expanded="true" />
+                <element signature="e#2621#2622#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -134,10 +105,44 @@
       <file leaf-file-name="OpticsService.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+            <state relative-caret-position="102">
+              <caret line="10" column="84" selection-start-line="10" selection-start-column="84" selection-end-line="10" selection-end-column="84" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OpticsServiceImpl.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="365">
+              <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Point.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Point.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Optics.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Optics.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
               <folding>
-                <element signature="imports" expanded="false" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#800#801#0" expanded="true" />
+                <element signature="e#848#849#0" expanded="true" />
+                <element signature="e#972#973#0" expanded="true" />
+                <element signature="e#1004#1005#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -169,7 +174,6 @@
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/App.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/Application.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocation.java" />
-        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java" />
         <option value="$PROJECT_DIR$/src/main/resources/db/migration/V2__locations.sql" />
         <option value="$PROJECT_DIR$/src/main/test/ml/cluster/service/OpticsServiceImplTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/java/ml/cluster/service/OpticsServiceImpl.java" />
@@ -178,10 +182,8 @@
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/27b7d941-f48d-43ad-84db-049998b396e6/console.sql" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/89c8f02e-8600-42de-b476-ffaa7d372279/console.sql" />
         <option value="$PROJECT_DIR$/src/main/resources/application.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/PickSegment.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixService.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java" />
-        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/MatrixCell.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/jpa/PickLocationService.java" />
         <option value="$PROJECT_DIR$/src/test/java/ml/cluster/service/OpticsServiceImplTest.java" />
@@ -191,10 +193,19 @@
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/error/CellNoAreaSpecifiedException.java" />
         <option value="$PROJECT_DIR$/src/main/java/ml/cluster/error/MatrixNoAreaSpecifiedException.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java" />
         <option value="$PROJECT_DIR$/src/test/java/ml/cluster/service/TestLocationsGenerator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/PickSegment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/Optics.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/Point.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/Point.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/FixedRadiusMatrix.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Point.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Optics.java" />
+        <option value="$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java" />
       </list>
     </option>
   </component>
@@ -254,10 +265,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-10" />
-    <option name="y" value="32" />
-    <option name="width" value="1719" />
-    <option name="height" value="1046" />
+    <option name="x" value="-34" />
+    <option name="y" value="66" />
+    <option name="width" value="1680" />
+    <option name="height" value="924" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -285,7 +296,6 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -417,40 +427,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="cluster" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ml_service" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ml_service-master" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ml" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cluster" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="to" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -623,9 +599,52 @@
               <option name="myItemId" value="datastructure" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="optics" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ml_service" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ml_service-master" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ml" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cluster" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="datastructure" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="matrix" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -654,147 +673,7 @@
       <recent name="ml.cluster.service" />
     </key>
   </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/MatrixCell.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/src/test/java/ml/cluster/service/TestLocationsGenerator.java</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
-  </component>
-  <component name="RunManager" selected="JUnit.MatrixServiceImplTest.testAssignNeighboringMatrixCells">
-    <configuration default="false" name="OpticsServiceImplTest.testGroupByLine" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
-        <pattern>
-          <option name="PATTERN" value="ml.cluster.service.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <module name="ml_service" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="ml.cluster.service" />
-      <option name="MAIN_CLASS_NAME" value="ml.cluster.service.OpticsServiceImplTest" />
-      <option name="METHOD_NAME" value="testGroupByLine" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <envs />
-      <patterns />
-      <method />
-    </configuration>
+  <component name="RunManager" selected="JUnit.MatrixServiceImplTest.testGetSegmentedLocations">
     <configuration default="false" name="MatrixServiceImplTest.testGetSegmentedLocations" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
         <pattern>
@@ -887,6 +766,32 @@
       <option name="MAIN_CLASS_NAME" value="ml.cluster.service.MatrixServiceImplTest" />
       <option name="METHOD_NAME" value="testAssignNeighboringMatrixCells" />
       <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="MatrixServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea">
+        <pattern>
+          <option name="PATTERN" value="ml.cluster.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <module name="ml_service" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="ml.cluster.service" />
+      <option name="MAIN_CLASS_NAME" value="ml.cluster.service.MatrixServiceImplTest" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" value="-ea" />
       <option name="PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
@@ -1322,19 +1227,19 @@
     </configuration>
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Spring Boot.Application" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.OpticsServiceImplTest.testGroupByLine" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGetSegmentedLocations" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGenerateSegmentMatrix" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignPickLocationsToMatrixCells" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignNeighboringMatrixCells" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGetSegmentedLocations" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGenerateSegmentMatrix" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignPickLocationsToMatrixCells" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignNeighboringMatrixCells" />
+      <item index="5" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignNeighboringMatrixCells" />
-        <item index="1" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGenerateSegmentMatrix" />
-        <item index="2" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignPickLocationsToMatrixCells" />
-        <item index="3" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGetSegmentedLocations" />
-        <item index="4" class="java.lang.String" itemvalue="JUnit.OpticsServiceImplTest.testGroupByLine" />
+        <item index="0" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGetSegmentedLocations" />
+        <item index="1" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest" />
+        <item index="2" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignNeighboringMatrixCells" />
+        <item index="3" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testGenerateSegmentMatrix" />
+        <item index="4" class="java.lang.String" itemvalue="JUnit.MatrixServiceImplTest.testAssignPickLocationsToMatrixCells" />
       </list>
     </recent_temporary>
   </component>
@@ -1368,7 +1273,8 @@
       <workItem from="1480873057016" duration="2429000" />
       <workItem from="1480878945118" duration="4212000" />
       <workItem from="1481036857899" duration="822000" />
-      <workItem from="1481193402238" duration="14580000" />
+      <workItem from="1481193402238" duration="14618000" />
+      <workItem from="1481271257780" duration="15036000" />
     </task>
     <task id="LOCAL-00001" summary="mem schema">
       <created>1480714385914</created>
@@ -1398,46 +1304,53 @@
       <option name="project" value="LOCAL" />
       <updated>1481037661968</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="matrix unit tests">
+      <created>1481210686325</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1481210686325</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 14h 42m 26s.xml">
+    <history-entry file="MatrixServiceImplTest - 2016.12.09 at 12h 57m 57s.xml">
+      <configuration name="MatrixServiceImplTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 11h 23m 20s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 14h 51m 11s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 11h 27m 01s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 14h 53m 51s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 11h 27m 17s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 14h 54m 30s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 11h 27m 38s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 15h 00m 51s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 12h 52m 28s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 15h 13m 23s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 12h 56m 58s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 15h 13m 54s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 12h 57m 07s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 15h 14m 16s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 12h 57m 33s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 16h 29m 40s.xml">
-      <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.08 at 16h 30m 02s.xml">
+    <history-entry file="MatrixServiceImplTest_testAssignNeighboringMatrixCells - 2016.12.09 at 12h 57m 40s.xml">
       <configuration name="MatrixServiceImplTest.testAssignNeighboringMatrixCells" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73366000" />
+    <option name="totallyTimeSpent" value="88440000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-10" y="32" width="1719" height="1046" extended-state="0" />
+    <frame x="-34" y="66" width="1680" height="924" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1448,27 +1361,27 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3074572" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32900432" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18232045" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.10227273" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Spring" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27365884" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.245679" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Bean Validation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Analysis" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27558637" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24242425" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30087528" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28914142" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Database Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3690476" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24350649" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1495,18 +1408,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java</url>
-          <line>123</line>
+          <line>41</line>
           <properties />
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java</url>
-          <line>126</line>
-          <properties />
-          <option name="timeStamp" value="13" />
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="21" />
+      <option name="time" value="29" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1515,7 +1422,7 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/FixedRadiusMatrix.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="646">
           <caret line="55" column="35" selection-start-line="55" selection-start-column="35" selection-end-line="55" selection-end-column="35" />
@@ -1536,42 +1443,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/PickSegment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="12" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="55" column="35" selection-start-line="55" selection-start-column="35" selection-end-line="55" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/generator/RandomGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/PickSegment.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/PickSegment.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
           <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="12" selection-end-column="30" />
@@ -1612,32 +1484,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/PickSegment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="15" column="19" selection-start-line="15" selection-start-column="19" selection-end-line="15" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#778#779#0" expanded="false" />
-            <element signature="e#805#806#0" expanded="false" />
-            <element signature="e#836#837#0" expanded="false" />
-            <element signature="e#863#864#0" expanded="false" />
-            <element signature="e#894#895#0" expanded="false" />
-            <element signature="e#921#922#0" expanded="false" />
-            <element signature="e#952#953#0" expanded="false" />
-            <element signature="e#979#980#0" expanded="false" />
-            <element signature="e#1010#1011#0" expanded="false" />
-            <element signature="e#1037#1038#0" expanded="false" />
-            <element signature="e#1101#1102#0" expanded="false" />
-            <element signature="e#1143#1144#0" expanded="false" />
-            <element signature="e#1334#1335#0" expanded="false" />
-            <element signature="e#1363#1364#0" expanded="false" />
-            <element signature="e#1418#1419#0" expanded="false" />
-            <element signature="e#1454#1455#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.5/commons-lang3-3.5.jar!/org/apache/commons/lang3/tuple/ImmutablePair.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -1649,14 +1495,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="241">
           <caret line="25" column="22" selection-start-line="25" selection-start-column="22" selection-end-line="25" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1696,10 +1534,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
-          <folding>
-            <element signature="e#243#244#0" expanded="false" />
-            <element signature="e#296#297#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1715,78 +1549,22 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="22" />
-          <folding>
-            <element signature="e#308#309#0" expanded="false" />
-            <element signature="e#376#377#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/FixedRadiusMatrix.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1020">
-          <caret line="91" column="5" selection-start-line="91" selection-start-column="5" selection-end-line="91" selection-end-column="5" />
-          <folding>
-            <element signature="e#2198#2199#0" expanded="true" />
-            <element signature="e#2255#2256#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="464">
-          <caret line="55" column="28" selection-start-line="55" selection-start-column="28" selection-end-line="55" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar!/org/junit/internal/runners/model/ReflectiveCallable.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/ml/cluster/service/OpticsServiceImplTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
+        <state relative-caret-position="68">
           <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="34" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/MatrixCell.java">
-      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
-          <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
-          <folding>
-            <element signature="e#1016#1017#0" expanded="true" />
-            <element signature="e#1070#1071#0" expanded="true" />
-          </folding>
+          <caret line="10" column="17" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1802,7 +1580,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
           <caret line="52" column="9" selection-start-line="52" selection-start-column="9" selection-end-line="52" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1810,36 +1587,140 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
           <caret line="47" column="11" selection-start-line="47" selection-start-column="11" selection-end-line="47" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="952">
-          <caret line="173" column="74" selection-start-line="173" selection-start-column="74" selection-end-line="173" selection-end-column="74" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/ml/cluster/service/TestLocationsGenerator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="373">
+        <state relative-caret-position="697">
           <caret line="51" column="75" selection-start-line="51" selection-start-column="59" selection-end-line="51" selection-end-column="75" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#536#537#0" expanded="true" />
-            <element signature="e#571#572#0" expanded="true" />
-          </folding>
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_102/src.zip!/java/util/function/Consumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="48" column="9" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_102/src.zip!/java/util/function/LongConsumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="48" column="9" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar!/org/junit/internal/runners/model/ReflectiveCallable.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_102/src.zip!/java/lang/Double.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="54" column="47" selection-start-line="54" selection-start-column="47" selection-end-line="54" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="10" column="84" selection-start-line="10" selection-start-column="84" selection-end-line="10" selection-end-column="84" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/PickSegment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="16" column="53" selection-start-line="16" selection-start-column="53" selection-end-line="16" selection-end-column="53" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/ml/cluster/service/MatrixServiceImplTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="68" column="52" selection-start-line="68" selection-start-column="52" selection-end-line="68" selection-end-column="52" />
+        <state relative-caret-position="340">
+          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/MatrixServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="68" column="73" selection-start-line="68" selection-start-column="73" selection-end-line="68" selection-end-column="73" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Point.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/FixedRadiusMatrix.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="28">
+          <caret line="93" column="29" selection-start-line="93" selection-start-column="4" selection-end-line="93" selection-end-column="29" />
+          <folding>
+            <element signature="e#2068#2069#0" expanded="true" />
+            <element signature="e#2098#2099#0" expanded="true" />
+            <element signature="e#2573#2574#0" expanded="true" />
+            <element signature="e#2621#2622#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/optics/Optics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#800#801#0" expanded="true" />
+            <element signature="e#848#849#0" expanded="true" />
+            <element signature="e#972#973#0" expanded="true" />
+            <element signature="e#1004#1005#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/datastructure/matrix/MatrixCell.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-187">
+          <caret line="8" column="19" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/to/PickLocationViewDO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4352">
+          <caret line="352" column="35" selection-start-line="352" selection-start-column="35" selection-end-line="352" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/ml/cluster/service/OpticsServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="365">
+          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
           <folding />
         </state>
       </provider>

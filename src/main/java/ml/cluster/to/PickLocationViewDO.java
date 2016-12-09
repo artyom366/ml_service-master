@@ -347,4 +347,33 @@ public class PickLocationViewDO implements Serializable {
         result = 31 * result + (dPack != null ? dPack.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "PickLocationViewDO {" +
+               "id=" + id +
+               ", x=" + x +
+               ", y=" + y +
+               ", line='" + line + '\'' +
+               ", scanCode='" + scanCode + '\'' +
+               ", deliveryId=" + deliveryId +
+               ", customerId=" + customerId +
+               ", trx=" + trx +
+               ", coSeq=" + coSeq +
+               ", clientId=" + clientId +
+               ", wrin=" + wrin +
+               ", quantity=" + quantity +
+               ", goodsId=" + goodsId +
+               ", warehouseId='" + warehouseId + '\'' +
+               ", location='" + location + '\'' +
+               ", pickSeq=" + pickSeq +
+               ", pickZoneId='" + pickZoneId + '\'' +
+               ", grWeight=" + grWeight +
+               ", cbm=" + cbm +
+               ", refillEvent=" + refillEvent +
+               ", quantityBase=" + quantityBase +
+               ", pslipTypeId=" + pslipTypeId +
+               ", dPack='" + dPack + '\'' +
+               '}';
+    }
 }
