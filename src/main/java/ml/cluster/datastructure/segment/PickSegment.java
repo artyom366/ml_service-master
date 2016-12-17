@@ -1,5 +1,6 @@
-package ml.cluster.datastructure.matrix;
+package ml.cluster.datastructure.segment;
 
+import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.to.PickLocationViewDO;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ public final class PickSegment {
     private final double maxY;
     private final double minY;
     private final String line;
-    private final List<PickLocationViewDO> locations;
     private FixedRadiusMatrix matrix;
 
     public PickSegment(final String line, final double minY, final double maxY, final double minX, final double maxX) {
@@ -24,7 +24,6 @@ public final class PickSegment {
         this.maxY = maxY;
         this.minX = minX;
         this.maxX = maxX;
-        this.locations = new ArrayList<PickLocationViewDO>();
     }
 
     public double getMaxX() {
@@ -47,15 +46,6 @@ public final class PickSegment {
         return line;
     }
 
-    public List<PickLocationViewDO> getLocations() {
-        return locations;
-    }
-
-    public void addToPickLocations(final PickLocationViewDO location) {
-        Validate.notNull(location, "Pick location is not defined");
-        this.locations.add(location);
-    }
-
     public FixedRadiusMatrix getMatrix() {
         return matrix;
     }
@@ -72,7 +62,6 @@ public final class PickSegment {
                ", maxY=" + maxY +
                ", minY=" + minY +
                ", line='" + line + '\'' +
-               ", locations=" + locations +
                ", matrix=" + matrix +
                '}';
     }
@@ -89,7 +78,6 @@ public final class PickSegment {
         if (Double.compare(that.maxY, maxY) != 0) return false;
         if (Double.compare(that.minY, minY) != 0) return false;
         if (!line.equals(that.line)) return false;
-        if (!locations.equals(that.locations)) return false;
         return matrix != null ? matrix.equals(that.matrix) : that.matrix == null;
 
     }
@@ -107,7 +95,6 @@ public final class PickSegment {
         temp = Double.doubleToLongBits(minY);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + line.hashCode();
-        result = 31 * result + locations.hashCode();
         result = 31 * result + (matrix != null ? matrix.hashCode() : 0);
         return result;
     }

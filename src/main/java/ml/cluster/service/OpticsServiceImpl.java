@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
-import ml.cluster.datastructure.matrix.PickSegment;
+import ml.cluster.datastructure.segment.PickSegment;
 import ml.cluster.datastructure.optics.Optics;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.to.PickLocationViewDO;

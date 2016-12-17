@@ -1,29 +1,22 @@
 package ml.cluster.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
+import ml.cluster.datastructure.matrix.MatrixCell;
+import ml.cluster.datastructure.segment.PickSegment;
+import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
-import ml.cluster.datastructure.matrix.MatrixCell;
-import ml.cluster.datastructure.matrix.PickSegment;
-import ml.cluster.to.PickLocationViewDO;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatrixServiceImplTest {
@@ -142,7 +135,7 @@ public class MatrixServiceImplTest {
 		});
 	}
 
-	@Ignore
+	@Test
 	public void testAssignNeighboringMatrixCells() throws Exception {
 		final int fixedMaxXAxisValue = 15;
 		final int fixedMaxYAxisValue = 15;
@@ -150,9 +143,11 @@ public class MatrixServiceImplTest {
 		final Map<String, List<PickLocationViewDO>> segmentGroups =
 			TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS, fixedMaxXAxisValue, fixedMaxYAxisValue);
 		final Map<PickSegment, List<PickLocationViewDO>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+		final Set<PickSegment> pickSegmentsMatrices = matrixService.generateSegmentMatricesAndCells(pickSegments);
+
 		matrixService.generateSegmentMatrix(pickSegments);
 		matrixService.assignPickLocationsToMatrixCells(pickSegments);
-		matrixService.assignNeighboringMatrixCells(pickSegments);
+		matrixService.assignNeighboringMatrixCells(pickSegmentsMatrices);
 
 		final Set<PickSegment> key = pickSegments.keySet();
 		final PickSegment segment = key.iterator().next();
@@ -167,24 +162,24 @@ public class MatrixServiceImplTest {
 		final Pair<Long, Long> cell0Neighbor0 = neighboringCells0.get(0);
 		final Pair<Long, Long> cell0Neighbor1 = neighboringCells0.get(1);
 		final Pair<Long, Long> cell0Neighbor2 = neighboringCells0.get(2);
-		assertThat(cell0Neighbor0.getLeft() == 0 && cell0Neighbor0.getRight() == 1, is(true));
-		assertThat(cell0Neighbor1.getLeft() == 1 && cell0Neighbor1.getRight() == 0, is(true));
-		assertThat(cell0Neighbor2.getLeft() == 1 && cell0Neighbor2.getRight() == 1, is(true));
+		assertThat(cell0Neighbor0.getLeft() == 1 && cell0Neighbor0.getRight() == 1, is(true));
+		assertThat(cell0Neighbor1.getLeft() == 0 && cell0Neighbor1.getRight() == 1, is(true));
+		assertThat(cell0Neighbor2.getLeft() == 1 && cell0Neighbor2.getRight() == 0, is(true));
 
 		final MatrixCell cell1 = cells.get(new ImmutablePair<>(0L, 1L));
 		final Set<Pair<Long, Long>> neighboringCellsSet1 = cell1.getNeighboringCells();
 		assertThat(neighboringCellsSet1.size() == 5, is(true));
 
-		List<Pair<Long, Long>> neighboringCells1 = new ArrayList<>(neighboringCellsSet0);
+		List<Pair<Long, Long>> neighboringCells1 = new ArrayList<>(neighboringCellsSet1);
 		final Pair<Long, Long> cell1Neighbor0 = neighboringCells1.get(0);
 		final Pair<Long, Long> cell1Neighbor1 = neighboringCells1.get(1);
 		final Pair<Long, Long> cell1Neighbor2 = neighboringCells1.get(2);
 		final Pair<Long, Long> cell1Neighbor3 = neighboringCells1.get(3);
 		final Pair<Long, Long> cell1Neighbor4 = neighboringCells1.get(4);
 		assertThat(cell1Neighbor0.getLeft() == 0 && cell1Neighbor0.getRight() == 0, is(true));
-		assertThat(cell1Neighbor1.getLeft() == 0 && cell1Neighbor1.getRight() == 2, is(true));
+		assertThat(cell1Neighbor1.getLeft() == 1 && cell1Neighbor1.getRight() == 1, is(true));
 		assertThat(cell1Neighbor2.getLeft() == 1 && cell1Neighbor2.getRight() == 0, is(true));
-		assertThat(cell1Neighbor3.getLeft() == 1 && cell1Neighbor3.getRight() == 1, is(true));
+		assertThat(cell1Neighbor3.getLeft() == 0 && cell1Neighbor3.getRight() == 2, is(true));
 		assertThat(cell1Neighbor4.getLeft() == 1 && cell1Neighbor4.getRight() == 2, is(true));
 
 		final MatrixCell cell4 = cells.get(new ImmutablePair<>(1L, 1L));
@@ -201,12 +196,12 @@ public class MatrixServiceImplTest {
 		final Pair<Long, Long> cell4Neighbor6 = neighboringCells4.get(6);
 		final Pair<Long, Long> cell4Neighbor7 = neighboringCells4.get(7);
 		assertThat(cell4Neighbor0.getLeft() == 0 && cell4Neighbor0.getRight() == 0, is(true));
-		assertThat(cell4Neighbor1.getLeft() == 0 && cell4Neighbor1.getRight() == 1, is(true));
-		assertThat(cell4Neighbor2.getLeft() == 0 && cell4Neighbor2.getRight() == 2, is(true));
+		assertThat(cell4Neighbor1.getLeft() == 2 && cell4Neighbor1.getRight() == 2, is(true));
+		assertThat(cell4Neighbor2.getLeft() == 0 && cell4Neighbor2.getRight() == 1, is(true));
 		assertThat(cell4Neighbor3.getLeft() == 1 && cell4Neighbor3.getRight() == 0, is(true));
-		assertThat(cell4Neighbor4.getLeft() == 1 && cell4Neighbor4.getRight() == 2, is(true));
+		assertThat(cell4Neighbor4.getLeft() == 0 && cell4Neighbor4.getRight() == 2, is(true));
 		assertThat(cell4Neighbor5.getLeft() == 2 && cell4Neighbor5.getRight() == 0, is(true));
-		assertThat(cell4Neighbor6.getLeft() == 2 && cell4Neighbor6.getRight() == 1, is(true));
-		assertThat(cell4Neighbor7.getLeft() == 2 && cell4Neighbor7.getRight() == 2, is(true));
+		assertThat(cell4Neighbor6.getLeft() == 1 && cell4Neighbor6.getRight() == 2, is(true));
+		assertThat(cell4Neighbor7.getLeft() == 2 && cell4Neighbor7.getRight() == 1, is(true));
 	}
 }

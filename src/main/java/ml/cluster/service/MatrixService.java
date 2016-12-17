@@ -1,14 +1,12 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.matrix.PickSegment;
-import ml.cluster.error.CellNoAreaSpecifiedException;
+import ml.cluster.datastructure.segment.PickSegment;
 import ml.cluster.error.MatrixException;
-import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public interface MatrixService {
-    Map<PickSegment, List<PickLocationViewDO>> getSegmentedLocations(List<PickLocationViewDO> pickLocationViewDOs) throws MatrixException;
+    Set<PickSegment> getSegmentedLocations(List<PickLocationViewDO> pickLocationViewDOs) throws MatrixException;
 }

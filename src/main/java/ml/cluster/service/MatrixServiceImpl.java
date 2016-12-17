@@ -1,46 +1,32 @@
 package ml.cluster.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.DoubleSummaryStatistics;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.tags.form.SelectTag;
-
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
-import ml.cluster.datastructure.matrix.PickSegment;
+import ml.cluster.datastructure.segment.PickSegment;
 import ml.cluster.error.CellNeighborsInconsistencyException;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
+import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("matrixService")
 public class MatrixServiceImpl implements MatrixService {
 
     @Override
-    public Map<PickSegment, List<PickLocationViewDO>> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) throws MatrixException {
+    public Set<PickSegment> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) throws MatrixException {
         Validate.notEmpty(pickLocationViewDOs, "Pick locations are not defined");
 
         final Map<String, List<PickLocationViewDO>> segmentGroups = groupByLine(pickLocationViewDOs);
         final Map<PickSegment, List<PickLocationViewDO>> pickSegments = defineSegmentBoundaries(segmentGroups);
 
-        generateSegmentMatrix(pickSegments);
-        assignPickLocationsToMatrixCells(pickSegments);
-        assignNeighboringMatrixCells(pickSegments);
-        validateMatrixCells(pickSegments);
-
-        return Collections.unmodifiableMap(pickSegments);
+        return generateSegmentMatricesAndCells(pickSegments);
     }
 
     protected Map<String, List<PickLocationViewDO>> groupByLine(final List<PickLocationViewDO> pickLocations) {
@@ -65,7 +51,7 @@ public class MatrixServiceImpl implements MatrixService {
         return Collections.unmodifiableMap(pickSegments);
     }
 
-    protected void generateSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixNoAreaSpecifiedException, CellNoAreaSpecifiedException {
+    protected void generateSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixException {
         for (final PickSegment segment : pickSegments.keySet()) {
 
             final double matrixHeight = segment.getMaxY() - segment.getMinY();
@@ -84,13 +70,13 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    private void validateMatrixSize(final double matrixHeight, final double matrixWidth) throws MatrixNoAreaSpecifiedException {
+    private void validateMatrixSize(final double matrixHeight, final double matrixWidth) throws MatrixException {
         if (matrixHeight == 0 || matrixWidth == 0) {
             throw new MatrixNoAreaSpecifiedException(matrixWidth, matrixHeight);
         }
     }
 
-    private void validateCellSize(final FixedRadiusMatrix matrix) throws CellNoAreaSpecifiedException {
+    private void validateCellSize(final FixedRadiusMatrix matrix) throws MatrixException {
         if (matrix.getCellHeight() == 0 || matrix.getCellWidth() == 0) {
             throw new CellNoAreaSpecifiedException(matrix.getCellWidth(), matrix.getCellHeight());
         }
@@ -143,23 +129,42 @@ public class MatrixServiceImpl implements MatrixService {
         return location.getX() < cell.getMaxX() && location.getX() >= cell.getMinX() && location.getY() < cell.getMaxY() && location.getY() >= cell.getMinY();
     }
 
-    protected void assignNeighboringMatrixCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
-        pickSegments.forEach((segment, locations) -> {
+    protected Set<PickSegment> generateSegmentMatricesAndCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixException {
+        generateSegmentMatrix(pickSegments);
+        assignPickLocationsToMatrixCells(pickSegments);
+        return finishSegmentMatrix(pickSegments);
+    }
 
-            segment.getMatrix().getSegmentPickCells().forEach((coordinates, cell) -> {
+    private Set<PickSegment> finishSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixException {
+        final Set<PickSegment> pickingSegmentsMatrices = getPickingSegments(pickSegments);
+        assignNeighboringMatrixCells(pickingSegmentsMatrices);
+        return pickingSegmentsMatrices;
+    }
+
+    private Set<PickSegment> getPickingSegments(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
+        return Collections.unmodifiableSet(pickSegments.keySet());
+    }
+
+    protected void assignNeighboringMatrixCells(final Set<PickSegment> pickSegmentsMatrices) throws MatrixException {
+
+        for (final PickSegment segment : pickSegmentsMatrices) {
+            final Map<Pair<Long, Long>, MatrixCell> segmentPickCells = segment.getMatrix().getSegmentPickCells();
+
+            for (final Pair<Long, Long> position : segmentPickCells.keySet()) {
+                final MatrixCell cell = segmentPickCells.get(position);
 
                 final long maxRow = segment.getMatrix().getRows();
                 final long maxColumn = segment.getMatrix().getColumns();
 
-                final long row = coordinates.getLeft();
-                final long column = coordinates.getRight();
+                final long row = position.getLeft();
+                final long column = position.getRight();
 
                 final List<Pair<Long, Long>> potentialNeighbors = getPotentialNeighbors(row, column);
                 final Set<Pair<Long, Long>> neighbors = refinePotentialNeighbors(potentialNeighbors, maxRow, maxColumn);
 
                 cell.addToNeighborPickingLocations(neighbors);
-            });
-        });
+            }
+        }
     }
 
     private List<Pair<Long, Long>> getPotentialNeighbors(final long baseRow, final long baseColumn) {
@@ -180,17 +185,22 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    private Set<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> potentialNeighbors, final long maxRow, final long maxColumn) {
+    private Set<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> potentialNeighbors, final long maxRow, final long maxColumn) throws MatrixException {
         final List<Pair<Long, Long>> refinedNeighbors = potentialNeighbors.stream().filter(neighbor -> isValidNeighbor(neighbor, maxRow, maxColumn)).collect(Collectors.toList());
-        final Set<Pair<Long, Long>> neighbors = new HashSet<>(refinedNeighbors);
-        return Collections.unmodifiableSet(neighbors);
+        return Collections.unmodifiableSet(getValidatedCellNeighbors(refinedNeighbors));
     }
 
     private boolean isValidNeighbor(final Pair<Long, Long> neighbor, final long maxRow, final long maxColumn) {
         return neighbor.getLeft() >= 0 && neighbor.getLeft() <= maxRow && neighbor.getRight() >= 0 && neighbor.getRight() <= maxColumn;
     }
 
-    private void validateMatrixCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
-     //todo refine matrix objects, make it more separate from each other
+    private Set<Pair<Long, Long>> getValidatedCellNeighbors(final List<Pair<Long, Long>> refinedNeighbors) throws CellNeighborsInconsistencyException {
+        final Set<Pair<Long, Long>> neighbors = new HashSet<>(refinedNeighbors);
+
+        if (neighbors.size() != refinedNeighbors.size()) {
+            throw new CellNeighborsInconsistencyException(neighbors.size(), refinedNeighbors.size());
+        }
+
+        return neighbors;
     }
 }

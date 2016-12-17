@@ -1,6 +1,6 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.matrix.PickSegment;
+import ml.cluster.datastructure.segment.PickSegment;
 import ml.cluster.to.PickLocationViewDO;
 
 import java.util.List;
