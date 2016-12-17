@@ -4,19 +4,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.tags.form.SelectTag;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.matrix.PickSegment;
+import ml.cluster.error.CellNeighborsInconsistencyException;
 import ml.cluster.error.CellNoAreaSpecifiedException;
+import ml.cluster.error.MatrixException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
 import ml.cluster.to.PickLocationViewDO;
 
@@ -24,7 +29,7 @@ import ml.cluster.to.PickLocationViewDO;
 public class MatrixServiceImpl implements MatrixService {
 
     @Override
-    public Map<PickSegment, List<PickLocationViewDO>> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) throws MatrixNoAreaSpecifiedException, CellNoAreaSpecifiedException {
+    public Map<PickSegment, List<PickLocationViewDO>> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) throws MatrixException {
         Validate.notEmpty(pickLocationViewDOs, "Pick locations are not defined");
 
         final Map<String, List<PickLocationViewDO>> segmentGroups = groupByLine(pickLocationViewDOs);
@@ -33,6 +38,7 @@ public class MatrixServiceImpl implements MatrixService {
         generateSegmentMatrix(pickSegments);
         assignPickLocationsToMatrixCells(pickSegments);
         assignNeighboringMatrixCells(pickSegments);
+        validateMatrixCells(pickSegments);
 
         return Collections.unmodifiableMap(pickSegments);
     }
@@ -149,7 +155,7 @@ public class MatrixServiceImpl implements MatrixService {
                 final long column = coordinates.getRight();
 
                 final List<Pair<Long, Long>> potentialNeighbors = getPotentialNeighbors(row, column);
-                final List<Pair<Long, Long>> neighbors = refinePotentialNeighbors(potentialNeighbors, maxRow, maxColumn);
+                final Set<Pair<Long, Long>> neighbors = refinePotentialNeighbors(potentialNeighbors, maxRow, maxColumn);
 
                 cell.addToNeighborPickingLocations(neighbors);
             });
@@ -174,11 +180,17 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    private List<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> neighbors, final long maxRow, final long maxColumn) {
-        return Collections.unmodifiableList(neighbors.stream().filter(neighbor -> isValidNeighbor(neighbor, maxRow, maxColumn)).collect(Collectors.toList()));
+    private Set<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> potentialNeighbors, final long maxRow, final long maxColumn) {
+        final List<Pair<Long, Long>> refinedNeighbors = potentialNeighbors.stream().filter(neighbor -> isValidNeighbor(neighbor, maxRow, maxColumn)).collect(Collectors.toList());
+        final Set<Pair<Long, Long>> neighbors = new HashSet<>(refinedNeighbors);
+        return Collections.unmodifiableSet(neighbors);
     }
 
     private boolean isValidNeighbor(final Pair<Long, Long> neighbor, final long maxRow, final long maxColumn) {
         return neighbor.getLeft() >= 0 && neighbor.getLeft() <= maxRow && neighbor.getRight() >= 0 && neighbor.getRight() <= maxColumn;
+    }
+
+    private void validateMatrixCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
+     //todo refine matrix objects, make it more separate from each other
     }
 }

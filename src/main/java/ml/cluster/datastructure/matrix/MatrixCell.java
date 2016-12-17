@@ -4,7 +4,9 @@ import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class MatrixCell {
 
@@ -13,7 +15,7 @@ public final class MatrixCell {
     private final long maxY;
     private final long minY;
     private final List<PickLocationViewDO> locations;
-    private final List<Pair<Long, Long>> neighboringCells;
+    private final Set<Pair<Long, Long>> neighboringCells;
 
     public MatrixCell(final long maxX, final long minX, final long maxY, final long minY) {
         this.maxX = maxX;
@@ -21,14 +23,14 @@ public final class MatrixCell {
         this.maxY = maxY;
         this.minY = minY;
         this.locations = new ArrayList<PickLocationViewDO>();
-        this.neighboringCells = new ArrayList<>();
+        this.neighboringCells = new HashSet<>();
     }
 
     public List<PickLocationViewDO> getLocations() {
         return locations;
     }
 
-    public List<Pair<Long, Long>> getNeighboringCells() {
+    public Set<Pair<Long, Long>> getNeighboringCells() {
         return neighboringCells;
     }
 
@@ -40,7 +42,7 @@ public final class MatrixCell {
         this.neighboringCells.add(neighbor);
     }
 
-    public void addToNeighborPickingLocations(final List<Pair<Long, Long>> neighbors) {
+    public void addToNeighborPickingLocations(final Set<Pair<Long, Long>> neighbors) {
         this.neighboringCells.addAll(neighbors);
     }
 

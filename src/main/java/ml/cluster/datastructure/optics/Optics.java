@@ -7,7 +7,7 @@ import org.apache.commons.lang3.Validate;
 
 public final class Optics {
 
-	private final long minPts;
+	private final int minPts;
 	private final List<Point> orderedPoints;
 
 	private Optics(final OpticsBuilder opticsBuilder) {
@@ -15,7 +15,7 @@ public final class Optics {
 		this.orderedPoints = opticsBuilder.orderedPoints;
 	}
 
-	public long getMinPts() {
+	public int getMinPts() {
 		return minPts;
 	}
 
@@ -30,14 +30,14 @@ public final class Optics {
 
 	public final static class OpticsBuilder {
 
-		private long minPts = 5;
+		private int minPts = 5;
 		private final List<Point> orderedPoints;
 
 		public OpticsBuilder() {
 			this.orderedPoints = new LinkedList<>();
 		}
 
-		public OpticsBuilder minPts(final long minPts) {
+		public OpticsBuilder minPts(final int minPts) {
 			this.minPts = minPts;
 			return this;
 		}
