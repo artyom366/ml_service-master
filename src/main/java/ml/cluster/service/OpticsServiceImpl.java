@@ -25,15 +25,15 @@ public class OpticsServiceImpl implements OpticsService {
     }
 
     @Override
-	public void getOrderingPoints(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
-		Validate.notEmpty(pickSegments, "Pick locations are not defined");
+	public void getOrderingPoints(final Set<PickSegment> pickSegmentMatrices) {
+		Validate.notEmpty(pickSegmentMatrices, "Pick locations are not defined");
 
 		final Optics optics = new Optics.OpticsBuilder().minPts(5).build();
-		processSegmentMatrices(pickSegments, optics);
+		processSegmentMatrices(pickSegmentMatrices, optics);
 	}
 
-	private void processSegmentMatrices(final Map<PickSegment, List<PickLocationViewDO>> pickSegments, final Optics optics) {
-		pickSegments.forEach((segment, locations) -> {
+	private void processSegmentMatrices(final Set<PickSegment> pickSegmentMatrices, final Optics optics) {
+		pickSegmentMatrices.forEach((segment) -> {
 			final FixedRadiusMatrix matrix = segment.getMatrix();
 			processMatrixCells(matrix, optics);
 		});
@@ -57,33 +57,51 @@ public class OpticsServiceImpl implements OpticsService {
 		final List<PickLocationViewDO> neighboringLocations = getNeighboringLocations(cell.getNeighboringCells(), matrix);
 
 		currentCellLocations.forEach(currentLocation -> {
-
-            final List<Point> nearestNeighbours = getNearestNeighbours(currentLocation, neighboringLocations, matrix.getRadius());
-            final double coreDistance = getCoreDistance(nearestNeighbours, optics.getMinPts());
-
-
-            final Point centerPoint = new Point(currentLocation);
-			centerPoint.setCoreDistance(coreDistance);
-			centerPoint.setProcessed(true);
-
-			optics.addToOrderedLocations(centerPoint);
-
-            if (centerPoint.getCoreDistance() != Double.NaN) {
-                updateClusterInfo(centerPoint, nearestNeighbours, optics);
-                addToCluster(matrix, cell, optics);
-            }
-
-
-
+			final boolean isCorePoint = isCorePoint(matrix, optics, neighboringLocations, currentLocation);
+			if (isCorePoint) {
+				addToCluster(matrix, cell, optics);
+			}
 		});
+
+
 	}
 
-    protected List<PickLocationViewDO> getNeighboringLocations(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
+	private boolean processNextNeighboringPoint(final FixedRadiusMatrix matrix, final Optics optics, final List<PickLocationViewDO> neighboringLocations, final Point currentPoint) {
+		return isCorePoint(matrix, optics, neighboringLocations, currentPoint.getLocation());
+	}
+
+	private boolean isCorePoint(final FixedRadiusMatrix matrix, final Optics optics, final List<PickLocationViewDO> neighboringLocations, final PickLocationViewDO currentLocation) {
+		final List<Point> nearestNeighbours = getNearestNeighbours(currentLocation, neighboringLocations, matrix.getRadius());
+		final double coreDistance = getCoreDistance(nearestNeighbours, optics.getMinPts());
+
+
+		final Point centerPoint = new Point(currentLocation);
+		centerPoint.setCoreDistance(coreDistance);
+		centerPoint.setProcessed(true);
+
+		optics.addToOrderedLocations(centerPoint);
+
+		return isCorePoint(optics, nearestNeighbours, centerPoint);
+	}
+
+	private boolean isCorePoint(final Optics optics, final List<Point> nearestNeighbours, final Point centerPoint) {
+		final boolean isCoreObject = centerPoint.getCoreDistance() != Double.NaN;
+
+		if (isCoreObject) {
+            updateClusterInfo(centerPoint, nearestNeighbours, optics);
+
+        }
+
+		return isCoreObject;
+	}
+
+	protected List<PickLocationViewDO> getNeighboringLocations(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
 		return matrix.getSegmentPickCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
 			.collect(Collectors.toList()).stream().map(MatrixCell::getLocations).collect(Collectors.toList()).stream().flatMap(List::stream)
 			.collect(Collectors.toList());
 	}
 
+	//todo separate nn to separate class
     private List<Point> getNearestNeighbours(final Point currentLocation, final List<PickLocationViewDO> neighboringLocations, final long radius) {
         return getNearestNeighbours(currentLocation.getLocation(), neighboringLocations, radius);
     }
@@ -166,14 +184,17 @@ public class OpticsServiceImpl implements OpticsService {
 
     private void addToCluster(final FixedRadiusMatrix matrix, final MatrixCell cell, final Optics optics) {
 
-        queue.forEach(point -> {
+		final List<PickLocationViewDO> neighboringLocations = getNeighboringLocations(cell.getNeighboringCells(), matrix);
 
-            final List<PickLocationViewDO> neighboringLocations = getNeighboringLocations(cell.getNeighboringCells(), matrix);
-			final List<Point> nearestNeighbours = getNearestNeighbours(point, neighboringLocations, matrix.getRadius());
-			//todo the same code, recursive call
+        while (true) {
+			final Point centerPoint = queue.poll();
 
-		});
+			if (centerPoint == null) {
+				break;
+			}
 
+			processNextNeighboringPoint(matrix, optics, neighboringLocations, centerPoint);
+		}
     }
 
 

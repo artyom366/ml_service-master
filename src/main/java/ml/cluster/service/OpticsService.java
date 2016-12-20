@@ -1,12 +1,10 @@
 package ml.cluster.service;
 
 import ml.cluster.datastructure.segment.PickSegment;
-import ml.cluster.to.PickLocationViewDO;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public interface OpticsService {
 
-    void getOrderingPoints(Map<PickSegment, List<PickLocationViewDO>> pickSegments);
+    void getOrderingPoints(Set<PickSegment> pickSegmentMatrices);
 }
