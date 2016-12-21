@@ -30,7 +30,7 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testGetSegmentedLocations() throws Exception {
-		final List<PickLocationViewDO> locations = TestLocationsGenerator.generate(NUMBER_OF_LOCATIONS);
+		final List<PickLocationViewDO> locations = TestLocationsGenerator.generateLocations(NUMBER_OF_LOCATIONS);
 
 		final Map<String, List<PickLocationViewDO>> result = matrixService.groupByLine(locations);
 		assertThat(result, is(notNullValue()));
@@ -42,7 +42,7 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testDefineSegmentBoundaries() throws Exception {
-		final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS_IN_GROUP);
+		final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGroupedLocations(NUMBER_OF_LOCATIONS_IN_GROUP);
 
 		final Map<PickSegment, List<PickLocationViewDO>> result = matrixService.defineSegmentBoundaries(segmentGroups);
 		assertThat(result, is(notNullValue()));
@@ -68,7 +68,7 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testGenerateSegmentMatrix() throws Exception {
-		final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS_IN_MATRIX);
+		final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGroupedLocations(NUMBER_OF_LOCATIONS_IN_MATRIX);
 		final Map<PickSegment, List<PickLocationViewDO>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 
 		matrixService.generateSegmentMatrix(pickSegments);
@@ -109,7 +109,7 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testAssignPickLocationsToMatrixCells() throws Exception {
-		final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS_IN_MATRIX);
+		final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGroupedLocations(NUMBER_OF_LOCATIONS_IN_MATRIX);
 		final Map<PickSegment, List<PickLocationViewDO>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 		matrixService.generateSegmentMatrix(pickSegments);
 		matrixService.assignPickLocationsToMatrixCells(pickSegments);
@@ -141,7 +141,7 @@ public class MatrixServiceImplTest {
 		final int fixedMaxYAxisValue = 15;
 
 		final Map<String, List<PickLocationViewDO>> segmentGroups =
-			TestLocationsGenerator.generateGrouped(NUMBER_OF_LOCATIONS, fixedMaxXAxisValue, fixedMaxYAxisValue);
+			TestLocationsGenerator.generateGroupedLocations(NUMBER_OF_LOCATIONS, fixedMaxXAxisValue, fixedMaxYAxisValue);
 		final Map<PickSegment, List<PickLocationViewDO>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 		final Set<PickSegment> pickSegmentsMatrices = matrixService.generateSegmentMatricesAndCells(pickSegments);
 
