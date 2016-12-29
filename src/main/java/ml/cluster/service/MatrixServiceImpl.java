@@ -3,12 +3,11 @@ package ml.cluster.service;
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.optics.Point;
-import ml.cluster.datastructure.segment.PickSegment;
+import ml.cluster.datastructure.segment.Segment;
 import ml.cluster.error.CellNeighborsInconsistencyException;
 import ml.cluster.error.CellNoAreaSpecifiedException;
 import ml.cluster.error.MatrixException;
 import ml.cluster.error.MatrixNoAreaSpecifiedException;
-import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -21,39 +20,39 @@ import java.util.stream.Collectors;
 public class MatrixServiceImpl implements MatrixService {
 
     @Override
-    public Set<PickSegment> getSegmentedLocations(final List<Point> points) throws MatrixException {
-        Validate.notEmpty(points, "Pick locations are not defined");
+    public Set<Segment> getSegmentedLocationPoints(final List<Point> points) throws MatrixException {
+        Validate.notEmpty(points, "Location points are not defined");
 
         final Map<String, List<Point>> segmentGroups = groupByLine(points);
-        final Map<PickSegment, List<Point>> pickSegments = defineSegmentBoundaries(segmentGroups);
+        final Map<Segment, List<Point>> segments = defineSegmentBoundaries(segmentGroups);
 
-        return generateSegmentMatricesAndCells(pickSegments);
+        return generateSegmentMatricesAndCells(segments);
     }
 
     protected Map<String, List<Point>> groupByLine(final List<Point> points) {
         return Collections.unmodifiableMap(points.stream().collect(Collectors.groupingBy(Point::getLine)));
     }
 
-    protected Map<PickSegment, List<Point>> defineSegmentBoundaries(final Map<String, List<Point>> segmentGroups) {
-        final Map<PickSegment, List<Point>> pickSegments = new HashMap<>();
+    protected Map<Segment, List<Point>> defineSegmentBoundaries(final Map<String, List<Point>> segmentGroups) {
+        final Map<Segment, List<Point>> segments = new HashMap<>();
 
-        segmentGroups.forEach((line, pickLocations) -> {
-            final DoubleSummaryStatistics xStats = pickLocations.stream().mapToDouble(Point::getX).summaryStatistics();
-            final DoubleSummaryStatistics yStats = pickLocations.stream().mapToDouble(Point::getY).summaryStatistics();
+        segmentGroups.forEach((line, locationPoints) -> {
+            final DoubleSummaryStatistics xStats = locationPoints.stream().mapToDouble(Point::getX).summaryStatistics();
+            final DoubleSummaryStatistics yStats = locationPoints.stream().mapToDouble(Point::getY).summaryStatistics();
 
             final double minY = yStats.getMin();
             final double maxY = yStats.getMax();
             final double minX = xStats.getMin();
             final double maxX = xStats.getMax();
 
-            pickSegments.put(new PickSegment(line, minY, maxY, minX, maxX), pickLocations);
+            segments.put(new Segment(line, minY, maxY, minX, maxX), locationPoints);
         });
 
-        return Collections.unmodifiableMap(pickSegments);
+        return Collections.unmodifiableMap(segments);
     }
 
-    protected void generateSegmentMatrix(final Map<PickSegment, List<Point>> pickSegments) throws MatrixException {
-        for (final PickSegment segment : pickSegments.keySet()) {
+    protected void generateSegmentMatrix(final Map<Segment, List<Point>> segments) throws MatrixException {
+        for (final Segment segment : segments.keySet()) {
 
             final double matrixHeight = segment.getMaxY() - segment.getMinY();
             final double matrixWidth = segment.getMaxX() - segment.getMinX();
@@ -67,7 +66,7 @@ public class MatrixServiceImpl implements MatrixService {
             validateCellSize(matrix);
 
             segment.setMatrix(matrix);
-            generateSegments(segment, 0, 0, 0L, 0L);
+            generateCells(segment, 0, 0, 0L, 0L);
         }
     }
 
@@ -83,22 +82,22 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    private void generateSegments(final PickSegment segment, final double currentHeight, final double currentWidth, final long currentRow, final long currentColumn) {
+    private void generateCells(final Segment segment, final double currentHeight, final double currentWidth, final long currentRow, final long currentColumn) {
 
         if (segment.getMatrix().getRows() > currentRow) {
 
             if (segment.getMatrix().getColumns() > currentColumn) {
                 createMatrixCell(segment, currentRow, currentColumn);
-                generateSegments(segment, currentHeight, currentWidth + segment.getMatrix().getCellWidth(), currentRow, currentColumn + 1);
+                generateCells(segment, currentHeight, currentWidth + segment.getMatrix().getCellWidth(), currentRow, currentColumn + 1);
 
             } else if (segment.getMatrix().getRows() > currentRow + 1) {
                 createMatrixCell(segment, currentRow, 0);
-                generateSegments(segment, currentHeight + segment.getMatrix().getCellHeight(), 0, currentRow + 1, 0);
+                generateCells(segment, currentHeight + segment.getMatrix().getCellHeight(), 0, currentRow + 1, 0);
             }
         }
     }
 
-    private void createMatrixCell(final PickSegment segment, final long currentRow, final long currentColumn) {
+    private void createMatrixCell(final Segment segment, final long currentRow, final long currentColumn) {
 
         final long cellMinX = (long) segment.getMinX() + currentColumn * segment.getMatrix().getCellWidth();
         final long cellMaxX = cellMinX + segment.getMatrix().getCellWidth();
@@ -106,19 +105,19 @@ public class MatrixServiceImpl implements MatrixService {
         final long cellMaxY = cellMinY + segment.getMatrix().getCellHeight();
 
         final MatrixCell cell = new MatrixCell(cellMaxX, cellMinX, cellMaxY, cellMinY);
-        segment.getMatrix().addToSegmentPickLocations(new ImmutablePair<>(currentRow, currentColumn), cell);
+        segment.getMatrix().addCell(new ImmutablePair<>(currentRow, currentColumn), cell);
     }
 
-    protected void assignPickLocationsToMatrixCells(final Map<PickSegment, List<Point>> pickSegments) {
-        pickSegments.forEach((segment, points) -> {
+    protected void assignLocationPointsToMatrixCells(final Map<Segment, List<Point>> segments) {
+        segments.forEach((segment, locationPoints) -> {
 
-            final Map<Pair<Long, Long>, MatrixCell> segmentPickCells = segment.getMatrix().getSegmentPickCells();
+            final Map<Pair<Long, Long>, MatrixCell> cells = segment.getMatrix().getCells();
 
-            segmentPickCells.forEach((coordinates, cell) -> {
+            cells.forEach((position, cell) -> {
 
-                points.forEach(point -> {
-                    if (isLocationInCell(point, cell)) {
-                        cell.addToPickPoints(point);
+                locationPoints.forEach(locationPoint -> {
+                    if (locationPointCoordinatesMatchesCell(locationPoint, cell)) {
+                        cell.addToLocationPoints(locationPoint);
                     }
                 });
 
@@ -126,33 +125,33 @@ public class MatrixServiceImpl implements MatrixService {
         });
     }
 
-    private boolean isLocationInCell(final Point Point, final MatrixCell cell) {
+    private boolean locationPointCoordinatesMatchesCell(final Point Point, final MatrixCell cell) {
         return Point.getX() < cell.getMaxX() && Point.getX() >= cell.getMinX() && Point.getY() < cell.getMaxY() && Point.getY() >= cell.getMinY();
     }
 
-    protected Set<PickSegment> generateSegmentMatricesAndCells(final Map<PickSegment, List<Point>> pickSegments) throws MatrixException {
-        generateSegmentMatrix(pickSegments);
-        assignPickLocationsToMatrixCells(pickSegments);
-        return finishSegmentMatrix(pickSegments);
+    protected Set<Segment> generateSegmentMatricesAndCells(final Map<Segment, List<Point>> segments) throws MatrixException {
+        generateSegmentMatrix(segments);
+        assignLocationPointsToMatrixCells(segments);
+        return finishSegmentMatrix(segments);
     }
 
-    private Set<PickSegment> finishSegmentMatrix(final Map<PickSegment, List<Point>> pickSegments) throws MatrixException {
-        final Set<PickSegment> pickingSegmentsMatrices = getPickingSegments(pickSegments);
-        assignNeighboringMatrixCells(pickingSegmentsMatrices);
-        return pickingSegmentsMatrices;
+    private Set<Segment> finishSegmentMatrix(final Map<Segment, List<Point>> segments) throws MatrixException {
+        final Set<Segment> segmentMatrices = getSegments(segments);
+        assignNeighboringMatrixCells(segmentMatrices);
+        return segmentMatrices;
     }
 
-    private Set<PickSegment> getPickingSegments(final Map<PickSegment, List<Point>> pickSegments) {
-        return Collections.unmodifiableSet(pickSegments.keySet());
+    private Set<Segment> getSegments(final Map<Segment, List<Point>> segments) {
+        return Collections.unmodifiableSet(segments.keySet());
     }
 
-    protected void assignNeighboringMatrixCells(final Set<PickSegment> pickSegmentsMatrices) throws MatrixException {
+    protected void assignNeighboringMatrixCells(final Set<Segment> segmentsMatrices) throws MatrixException {
 
-        for (final PickSegment segment : pickSegmentsMatrices) {
-            final Map<Pair<Long, Long>, MatrixCell> segmentPickCells = segment.getMatrix().getSegmentPickCells();
+        for (final Segment segment : segmentsMatrices) {
+            final Map<Pair<Long, Long>, MatrixCell> cells = segment.getMatrix().getCells();
 
-            for (final Pair<Long, Long> position : segmentPickCells.keySet()) {
-                final MatrixCell cell = segmentPickCells.get(position);
+            for (final Pair<Long, Long> position : cells.keySet()) {
+                final MatrixCell cell = cells.get(position);
 
                 final long maxRow = segment.getMatrix().getRows();
                 final long maxColumn = segment.getMatrix().getColumns();
@@ -163,7 +162,7 @@ public class MatrixServiceImpl implements MatrixService {
                 final List<Pair<Long, Long>> potentialNeighbors = getPotentialNeighbors(row, column);
                 final Set<Pair<Long, Long>> neighbors = refinePotentialNeighbors(potentialNeighbors, maxRow, maxColumn);
 
-                cell.addToNeighborPickingLocations(neighbors);
+                cell.addToNeighboringCells(neighbors);
             }
         }
     }

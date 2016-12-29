@@ -1,14 +1,10 @@
 package ml.cluster.datastructure.segment;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
-import ml.cluster.to.PickLocationViewDO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.Validate;
 
-public final class PickSegment {
+public final class Segment {
 
     private final double maxX;
     private final double minX;
@@ -17,7 +13,7 @@ public final class PickSegment {
     private final String line;
     private FixedRadiusMatrix matrix;
 
-    public PickSegment(final String line, final double minY, final double maxY, final double minX, final double maxX) {
+    public Segment(final String line, final double minY, final double maxY, final double minX, final double maxX) {
         Validate.notEmpty(line, "Pick segment line is not defined");
         this.line = line;
         this.minY = minY;
@@ -56,7 +52,7 @@ public final class PickSegment {
 
     @Override
     public String toString() {
-        return "PickSegment {" +
+        return "Segment {" +
                "maxX=" + maxX +
                ", minX=" + minX +
                ", maxY=" + maxY +
@@ -71,7 +67,7 @@ public final class PickSegment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PickSegment that = (PickSegment) o;
+        Segment that = (Segment) o;
 
         if (Double.compare(that.maxX, maxX) != 0) return false;
         if (Double.compare(that.minX, minX) != 0) return false;

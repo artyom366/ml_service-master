@@ -8,33 +8,33 @@ import org.apache.commons.lang3.Validate;
 public final class Optics {
 
 	private final int minPts;
-	private final List<Point> orderedPoints;
+	private final List<Point> orderedLocationPoints;
 
 	private Optics(final OpticsBuilder opticsBuilder) {
 		this.minPts = opticsBuilder.minPts;
-		this.orderedPoints = opticsBuilder.orderedPoints;
+		this.orderedLocationPoints = opticsBuilder.orderedLocationPoints;
 	}
 
 	public int getMinPts() {
 		return minPts;
 	}
 
-	public List<Point> getOrderedPoints() {
-		return orderedPoints;
+	public List<Point> getOrderedLocationPoints() {
+		return orderedLocationPoints;
 	}
 
-	public void addToOrderedLocations(final Point point) {
+	public void addToOrderedLocationPoints(final Point point) {
 		Validate.notNull(point, "Pick location point is not defined");
-		this.orderedPoints.add(point);
+		this.orderedLocationPoints.add(point);
 	}
 
 	public final static class OpticsBuilder {
 
 		private int minPts = 5;
-		private final List<Point> orderedPoints;
+		private final List<Point> orderedLocationPoints;
 
 		public OpticsBuilder() {
-			this.orderedPoints = new LinkedList<>();
+			this.orderedLocationPoints = new LinkedList<>();
 		}
 
 		public OpticsBuilder minPts(final int minPts) {

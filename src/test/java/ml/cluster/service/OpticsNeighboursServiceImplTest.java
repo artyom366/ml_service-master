@@ -20,17 +20,16 @@ public class OpticsNeighboursServiceImplTest {
     private final static int NEIGHBOURING_LOCATIONS_COUNT = (MAX_X_AXIS_VALUE + MAX_X_AXIS_VALUE) / 2;
     private final static int RADIUS = (MAX_X_AXIS_VALUE + MAX_X_AXIS_VALUE) / 4;
     private final static int MIN_PTS = 5;
+    private final static double CENTER_X = MAX_X_AXIS_VALUE / 2;
+    private final static double CENTER_Y = MAX_Y_AXIS_VALUE / 2;
 
     @Spy
     private OpticsNeighboursServiceImpl opticsNeighboursService;
 
     @Test
     public void testGetNearestNeighbours() throws Exception {
-        final double centerX = MAX_X_AXIS_VALUE / 2;
-        final double centerY = MAX_Y_AXIS_VALUE / 2;
-
-        final List<Point> neighboringLocations = TestLocationsGenerator.generateLocations(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
-        final Point centerLocation = TestLocationsGenerator.createSingleLocation(centerX, centerY);
+        final List<Point> neighboringLocations = TestLocationPointsGenerator.generateLocationPoints(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
+        final Point centerLocation = TestLocationPointsGenerator.createSingleLocationPoint(CENTER_X, CENTER_Y);
 
         final List<Point> result = opticsNeighboursService.getNearestNeighbours(centerLocation, neighboringLocations, RADIUS);
         assertThat("Nearest neighbours list should not be null", result, is(notNullValue()));
@@ -40,15 +39,16 @@ public class OpticsNeighboursServiceImplTest {
         result.forEach(point -> {
             final double x = point.getX();
             final double y = point.getY();
-            assertThat("The distance between center point and its nearest neighbour should net be more then defined radius", Math.hypot((centerX - x), (centerY - y)) <= RADIUS, is(true));
+            assertThat("The distance between center point and its nearest neighbour should net be more then defined radius", Math.hypot((CENTER_X - x), (CENTER_Y - y)) <= RADIUS, is(true));
         });
     }
 
     @Test
     public void testGetCoreDistance() throws Exception {
-        final List<Point> nearestNeighbours = TestLocationsGenerator.generateLocationWithDistance(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE, RADIUS);
+        final Point currentPoint = TestLocationPointsGenerator.createSingleLocationPoint(CENTER_X, CENTER_Y);
+        final List<Point> nearestNeighbours = TestLocationPointsGenerator.generateLocationPointWithDistance(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE, RADIUS);
 
-        final double result = opticsNeighboursService.getCoreDistance(nearestNeighbours, MIN_PTS);
+        final double result = opticsNeighboursService.getCoreDistance(currentPoint, nearestNeighbours, MIN_PTS);
         assertThat("Core distance should be a defined double value", result != Double.NaN, is(true));
     }
 

@@ -1,10 +1,8 @@
 package ml.cluster.service;
 
-import ml.cluster.comparator.ReachabilityDistanceComparator;
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.optics.Point;
-import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
@@ -18,31 +16,53 @@ import java.util.stream.Collectors;
 public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
 
     @Override
-    public List<Point> getNeighboringLocations(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
-        return matrix.getSegmentPickCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
+    public List<Point> getNeighboringLocationPoints(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
+        return matrix.getCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
                 .collect(Collectors.toList()).stream().map(MatrixCell::getLocations).collect(Collectors.toList()).stream().flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Point> getNearestNeighbours(final Point currentLocation, final List<Point> neighboringLocations, final long radius) {
+    public List<Point> getNearestNeighbours(final Point currentLocationPoint, final List<Point> neighboringLocationPoints, final long radius) {
         final List<Point> nearestNeighbours = new ArrayList<>();
 
-        neighboringLocations.forEach(neighboringLocation -> {
+        neighboringLocationPoints.forEach(neighboringLocationPoint -> {
 
-            final double reachabilityDistance = getReachabilityDistance(currentLocation, neighboringLocation, radius);
+            final double reachabilityDistance = getReachabilityDistance(currentLocationPoint, neighboringLocationPoint, radius);
             if (reachabilityDistance <= radius) {
-                neighboringLocation.setReachabilityDistance(reachabilityDistance);
-                nearestNeighbours.add(neighboringLocation);
+                nearestNeighbours.add(neighboringLocationPoint);
             }
         });
 
         return nearestNeighbours;
     }
 
-    private double getReachabilityDistance(final Point currentLocation, final Point neighboringLocation, final long radius) {
+    @Override
+    public double getCoreDistance(final Point currentLocationPoint, final List<Point> nearestLocationPoints, final int minPts) {
+        if (nearestLocationPoints.size() < minPts) {
+            return Double.NaN;
 
-        final double distance = getLocationsDistance(currentLocation, neighboringLocation);
+        } else {
+            return getMinPtsReachabilityDistance(currentLocationPoint, nearestLocationPoints, minPts);
+        }
+    }
+
+    private double getMinPtsReachabilityDistance(final Point currentLocationPoint, final List<Point> nearestLocationsPoints, final int minPts) {
+        final List<Double> distances = new ArrayList<>();
+
+        nearestLocationsPoints.forEach(nearestLocation -> {
+            final double reachabilityDistance = getReachabilityDistance(currentLocationPoint, nearestLocation, minPts);
+            distances.add(reachabilityDistance);
+        });
+
+
+        distances.sort(Double::compareTo);
+        return distances.get(minPts - 1);
+    }
+
+    private double getReachabilityDistance(final Point currentLocationPoint, final Point neighboringLocationPoints, final long radius) {
+
+        final double distance = getLocationsDistance(currentLocationPoint, neighboringLocationPoints);
         if (isDirectlyDensityReachable(distance, radius)) {
             return distance;
         } else {
@@ -50,11 +70,11 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
         }
     }
 
-    private double getLocationsDistance(final Point currentLocation, final Point neighboringLocation) {
-        final double x = currentLocation.getX();
-        final double y = currentLocation.getY();
-        final double x1 = neighboringLocation.getX();
-        final double y1 = neighboringLocation.getY();
+    private double getLocationsDistance(final Point currentLocationPoint, final Point neighboringLocationPoint) {
+        final double x = currentLocationPoint.getX();
+        final double y = currentLocationPoint.getY();
+        final double x1 = neighboringLocationPoint.getX();
+        final double y1 = neighboringLocationPoint.getY();
         return Math.hypot(x - x1, y - y1);
     }
 
@@ -63,19 +83,7 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
     }
 
     @Override
-    public double getCoreDistance(final List<Point> nearestLocations, final int minPts) {
-        if (nearestLocations.size() < minPts) {
-            return Double.NaN;
-
-        } else {
-
-            nearestLocations.sort(new ReachabilityDistanceComparator());
-            return nearestLocations.get(minPts - 1).getReachabilityDistance();
-        }
-    }
-
-    @Override
-    public double getNeighbourReachabilityDistance(final Point centerPoint, final Point neighbourPoint) {
-        return Math.max(centerPoint.getCoreDistance(), getLocationsDistance(centerPoint, neighbourPoint));
+    public double getNeighbourReachabilityDistance(final Point centerLocationPoint, final Point neighbourLocationPoint) {
+        return Math.max(centerLocationPoint.getCoreDistance(), getLocationsDistance(centerLocationPoint, neighbourLocationPoint));
     }
 }

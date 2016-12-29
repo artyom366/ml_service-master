@@ -6,11 +6,13 @@ import ml.cluster.error.location.LocationMissingCoordinatesException;
 import ml.cluster.error.location.LocationMissingDeliveryParametersException;
 import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.Validate;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PointWrapperServiceImpl implements PointWrapperService {
+@Service("pointService")
+public class PointServiceImpl implements PointService {
 
     @Override
     public List<Point> getPoints(final List<PickLocationViewDO> locations) throws LocationException {

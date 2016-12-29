@@ -6,6 +6,6 @@ import ml.cluster.to.PickLocationViewDO;
 
 import java.util.List;
 
-public interface PointWrapperService {
+public interface PointService {
     List<Point> getPoints(List<PickLocationViewDO> locations) throws LocationException;
 }

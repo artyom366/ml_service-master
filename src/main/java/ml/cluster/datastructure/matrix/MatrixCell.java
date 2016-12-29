@@ -35,15 +35,15 @@ public final class MatrixCell {
         return neighboringCells;
     }
 
-    public void addToPickPoints(final Point point) {
+    public void addToLocationPoints(final Point point) {
         this.points.add(point);
     }
 
-    public void addToNeighborPickingLocations(final Pair<Long, Long> neighbor) {
+    public void addToNeighboringCells(final Pair<Long, Long> neighbor) {
         this.neighboringCells.add(neighbor);
     }
 
-    public void addToNeighborPickingLocations(final Set<Pair<Long, Long>> neighbors) {
+    public void addToNeighboringCells(final Set<Pair<Long, Long>> neighbors) {
         this.neighboringCells.addAll(neighbors);
     }
 

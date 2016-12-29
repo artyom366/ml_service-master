@@ -14,7 +14,7 @@ public final class FixedRadiusMatrix {
 	private final long radius;
 	private final long verticalCoefficient;
 	private final long horizontalCoefficient;
-	private final Map<Pair<Long, Long>, MatrixCell> segmentPickCells;
+	private final Map<Pair<Long, Long>, MatrixCell> cells;
 	private final long rows;
 	private final long columns;
 
@@ -22,7 +22,7 @@ public final class FixedRadiusMatrix {
 		this.radius = matrixBuilder.radius;
 		this.verticalCoefficient = matrixBuilder.verticalCoefficient;
 		this.horizontalCoefficient = matrixBuilder.horizontalCoefficient;
-		this.segmentPickCells = matrixBuilder.segmentPickCells;
+		this.cells = matrixBuilder.cells;
 		this.matrixHeight = matrixBuilder.matrixHeight;
 		this.matrixWidth = matrixBuilder.matrixWidth;
 		this.cellHeight = setCellHeight();
@@ -83,12 +83,12 @@ public final class FixedRadiusMatrix {
 		return columns;
 	}
 
-	public Map<Pair<Long, Long>, MatrixCell> getSegmentPickCells() {
-		return segmentPickCells;
+	public Map<Pair<Long, Long>, MatrixCell> getCells() {
+		return cells;
 	}
 
-	public void addToSegmentPickLocations(final Pair<Long, Long> coordinates, final MatrixCell matrixCell) {
-		this.segmentPickCells.put(coordinates, matrixCell);
+	public void addCell(final Pair<Long, Long> position, final MatrixCell matrixCell) {
+		this.cells.put(position, matrixCell);
 	}
 
 	public final static class MatrixBuilder {
@@ -96,12 +96,12 @@ public final class FixedRadiusMatrix {
 		private long radius = 5;
 		private long verticalCoefficient = 1;
 		private long horizontalCoefficient = 1;
-		private final Map<Pair<Long, Long>, MatrixCell> segmentPickCells;
+		private final Map<Pair<Long, Long>, MatrixCell> cells;
 		private double matrixHeight;
 		private double matrixWidth;
 
 		public MatrixBuilder() {
-			this.segmentPickCells = new TreeMap<>();
+			this.cells = new TreeMap<>();
 		}
 
 		public MatrixBuilder radius(final long radius) {
@@ -137,6 +137,6 @@ public final class FixedRadiusMatrix {
 	@Override
 	public String toString() {
 		return "FixedRadiusMatrix {" + "radius=" + radius + ", verticalCoefficient=" + verticalCoefficient + ", horizontalCoefficient=" + horizontalCoefficient
-			+ ", rows=" + rows + ", columns=" + columns + ", segmentPickCells=" + segmentPickCells + '}';
+			+ ", rows=" + rows + ", columns=" + columns + ", cells=" + cells + '}';
 	}
 }
