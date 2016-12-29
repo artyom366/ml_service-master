@@ -2,6 +2,7 @@ package ml.cluster.service;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
+import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.PickSegment;
 import ml.cluster.error.CellNeighborsInconsistencyException;
 import ml.cluster.error.CellNoAreaSpecifiedException;
@@ -20,25 +21,25 @@ import java.util.stream.Collectors;
 public class MatrixServiceImpl implements MatrixService {
 
     @Override
-    public Set<PickSegment> getSegmentedLocations(final List<PickLocationViewDO> pickLocationViewDOs) throws MatrixException {
-        Validate.notEmpty(pickLocationViewDOs, "Pick locations are not defined");
+    public Set<PickSegment> getSegmentedLocations(final List<Point> points) throws MatrixException {
+        Validate.notEmpty(points, "Pick locations are not defined");
 
-        final Map<String, List<PickLocationViewDO>> segmentGroups = groupByLine(pickLocationViewDOs);
-        final Map<PickSegment, List<PickLocationViewDO>> pickSegments = defineSegmentBoundaries(segmentGroups);
+        final Map<String, List<Point>> segmentGroups = groupByLine(points);
+        final Map<PickSegment, List<Point>> pickSegments = defineSegmentBoundaries(segmentGroups);
 
         return generateSegmentMatricesAndCells(pickSegments);
     }
 
-    protected Map<String, List<PickLocationViewDO>> groupByLine(final List<PickLocationViewDO> pickLocations) {
-        return Collections.unmodifiableMap(pickLocations.stream().collect(Collectors.groupingBy(PickLocationViewDO::getLine)));
+    protected Map<String, List<Point>> groupByLine(final List<Point> points) {
+        return Collections.unmodifiableMap(points.stream().collect(Collectors.groupingBy(Point::getLine)));
     }
 
-    protected Map<PickSegment, List<PickLocationViewDO>> defineSegmentBoundaries(final Map<String, List<PickLocationViewDO>> segmentGroups) {
-        final Map<PickSegment, List<PickLocationViewDO>> pickSegments = new HashMap<>();
+    protected Map<PickSegment, List<Point>> defineSegmentBoundaries(final Map<String, List<Point>> segmentGroups) {
+        final Map<PickSegment, List<Point>> pickSegments = new HashMap<>();
 
         segmentGroups.forEach((line, pickLocations) -> {
-            final DoubleSummaryStatistics xStats = pickLocations.stream().mapToDouble(PickLocationViewDO::getX).summaryStatistics();
-            final DoubleSummaryStatistics yStats = pickLocations.stream().mapToDouble(PickLocationViewDO::getY).summaryStatistics();
+            final DoubleSummaryStatistics xStats = pickLocations.stream().mapToDouble(Point::getX).summaryStatistics();
+            final DoubleSummaryStatistics yStats = pickLocations.stream().mapToDouble(Point::getY).summaryStatistics();
 
             final double minY = yStats.getMin();
             final double maxY = yStats.getMax();
@@ -51,7 +52,7 @@ public class MatrixServiceImpl implements MatrixService {
         return Collections.unmodifiableMap(pickSegments);
     }
 
-    protected void generateSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixException {
+    protected void generateSegmentMatrix(final Map<PickSegment, List<Point>> pickSegments) throws MatrixException {
         for (final PickSegment segment : pickSegments.keySet()) {
 
             final double matrixHeight = segment.getMaxY() - segment.getMinY();
@@ -108,16 +109,16 @@ public class MatrixServiceImpl implements MatrixService {
         segment.getMatrix().addToSegmentPickLocations(new ImmutablePair<>(currentRow, currentColumn), cell);
     }
 
-    protected void assignPickLocationsToMatrixCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
-        pickSegments.forEach((segment, locations) -> {
+    protected void assignPickLocationsToMatrixCells(final Map<PickSegment, List<Point>> pickSegments) {
+        pickSegments.forEach((segment, points) -> {
 
             final Map<Pair<Long, Long>, MatrixCell> segmentPickCells = segment.getMatrix().getSegmentPickCells();
 
             segmentPickCells.forEach((coordinates, cell) -> {
 
-                locations.forEach(location -> {
-                    if (isLocationInCell(location, cell)) {
-                        cell.addToPickLocations(location);
+                points.forEach(point -> {
+                    if (isLocationInCell(point, cell)) {
+                        cell.addToPickPoints(point);
                     }
                 });
 
@@ -125,23 +126,23 @@ public class MatrixServiceImpl implements MatrixService {
         });
     }
 
-    private boolean isLocationInCell(final PickLocationViewDO location, final MatrixCell cell) {
-        return location.getX() < cell.getMaxX() && location.getX() >= cell.getMinX() && location.getY() < cell.getMaxY() && location.getY() >= cell.getMinY();
+    private boolean isLocationInCell(final Point Point, final MatrixCell cell) {
+        return Point.getX() < cell.getMaxX() && Point.getX() >= cell.getMinX() && Point.getY() < cell.getMaxY() && Point.getY() >= cell.getMinY();
     }
 
-    protected Set<PickSegment> generateSegmentMatricesAndCells(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixException {
+    protected Set<PickSegment> generateSegmentMatricesAndCells(final Map<PickSegment, List<Point>> pickSegments) throws MatrixException {
         generateSegmentMatrix(pickSegments);
         assignPickLocationsToMatrixCells(pickSegments);
         return finishSegmentMatrix(pickSegments);
     }
 
-    private Set<PickSegment> finishSegmentMatrix(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) throws MatrixException {
+    private Set<PickSegment> finishSegmentMatrix(final Map<PickSegment, List<Point>> pickSegments) throws MatrixException {
         final Set<PickSegment> pickingSegmentsMatrices = getPickingSegments(pickSegments);
         assignNeighboringMatrixCells(pickingSegmentsMatrices);
         return pickingSegmentsMatrices;
     }
 
-    private Set<PickSegment> getPickingSegments(final Map<PickSegment, List<PickLocationViewDO>> pickSegments) {
+    private Set<PickSegment> getPickingSegments(final Map<PickSegment, List<Point>> pickSegments) {
         return Collections.unmodifiableSet(pickSegments.keySet());
     }
 

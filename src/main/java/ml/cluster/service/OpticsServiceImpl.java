@@ -17,13 +17,13 @@ import java.util.*;
 @Service("opticsService")
 public class OpticsServiceImpl implements OpticsService {
 
-    private final PriorityQueue<Point> queue;
+    private final PriorityQueue<Point> tempNeibourhood;
 
 	@Autowired
 	private OpticsNeighboursService opticsNeighboursService;
 
     public OpticsServiceImpl() {
-        queue = new PriorityQueue<>(new ReachabilityDistanceComparator());
+        tempNeibourhood = new PriorityQueue<>(new ReachabilityDistanceComparator());
     }
 
     @Override
@@ -51,24 +51,23 @@ public class OpticsServiceImpl implements OpticsService {
 
 	private void processCellLocations(final FixedRadiusMatrix matrix, final MatrixCell cell, final Optics optics) {
 
-		final List<PickLocationViewDO> currentCellLocations = cell.getLocations();
+		final List<Point> currentCellLocations = cell.getLocations();
 		if (currentCellLocations.isEmpty()) {
 			return;
 		}
 
-		final List<PickLocationViewDO> neighboringLocations = opticsNeighboursService.getNeighboringLocations(cell.getNeighboringCells(), matrix);
+		final List<Point> neighboringLocations = opticsNeighboursService.getNeighboringLocations(cell.getNeighboringCells(), matrix);
 
 		currentCellLocations.forEach(currentLocation -> {
 
-			final Point centerPoint = new Point(currentLocation);
-			final boolean isCorePoint = isCorePoint(centerPoint, neighboringLocations, matrix, optics);
+			final boolean isCorePoint = isCorePoint(currentLocation, neighboringLocations, matrix, optics);
 			if (isCorePoint) {
 				addToCluster(matrix, cell, optics);
 			}
 		});
 	}
 
-	private boolean isCorePoint(final Point centerPoint, final List<PickLocationViewDO> neighboringLocations, final FixedRadiusMatrix matrix, final Optics optics) {
+	private boolean isCorePoint(final Point centerPoint, final List<Point> neighboringLocations, final FixedRadiusMatrix matrix, final Optics optics) {
 
 		final List<Point> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(centerPoint, neighboringLocations, matrix.getRadius());
 		final double coreDistance = opticsNeighboursService.getCoreDistance(nearestNeighbours, optics.getMinPts());
@@ -89,26 +88,29 @@ public class OpticsServiceImpl implements OpticsService {
     private void updateClusterInfo(final Point centerPoint, final List<Point> nearestNeighbours, final Optics optics) {
 
         nearestNeighbours.forEach(neighbour -> {
-            final double neighbourReachabilityDistance = opticsNeighboursService.getNeighbourReachabilityDistance(centerPoint, neighbour);
 
-            if (neighbour.getReachabilityDistance() == Double.POSITIVE_INFINITY) {
-                neighbour.setReachabilityDistance(neighbourReachabilityDistance);
-                queue.add(neighbour);
+			if (!neighbour.isProcessed()) {
+				final double neighbourReachabilityDistance = opticsNeighboursService.getNeighbourReachabilityDistance(centerPoint, neighbour);
 
-            } else {
-                if (neighbour.getReachabilityDistance() > neighbourReachabilityDistance) {
-                    neighbour.setReachabilityDistance(neighbourReachabilityDistance);
-                }
-            }
+				if (neighbour.getReachabilityDistance() == Double.POSITIVE_INFINITY) {
+					neighbour.setReachabilityDistance(neighbourReachabilityDistance);
+					tempNeibourhood.add(neighbour);
+
+				} else {
+					if (neighbour.getReachabilityDistance() > neighbourReachabilityDistance) {
+						neighbour.setReachabilityDistance(neighbourReachabilityDistance);
+					}
+				}
+			}
         });
     }
 
     private void addToCluster(final FixedRadiusMatrix matrix, final MatrixCell cell, final Optics optics) {
 
-		final List<PickLocationViewDO> neighboringLocations = opticsNeighboursService.getNeighboringLocations(cell.getNeighboringCells(), matrix);
+		final List<Point> neighboringLocations = opticsNeighboursService.getNeighboringLocations(cell.getNeighboringCells(), matrix);
 
         while (true) {
-			final Point centerPoint = queue.poll();
+			final Point centerPoint = tempNeibourhood.poll();
 
 			if (centerPoint == null) {
 				break;

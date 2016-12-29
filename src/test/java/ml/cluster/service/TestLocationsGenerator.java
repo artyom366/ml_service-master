@@ -18,39 +18,43 @@ public class TestLocationsGenerator {
         return LINES.length;
     }
 
-    public static List<PickLocationViewDO> generateLocations(final int quantity) {
+    public static List<Point> generateLocations(final int quantity) {
         return generateLocations(quantity, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
     }
 
-    public static List<PickLocationViewDO> generateLocations(final int quantity, final int maxX, final int maxY) {
-        final List<PickLocationViewDO> locations = new ArrayList<>();
+    public static List<Point> generateLocations(final int quantity, final int maxX, final int maxY) {
+        final List<Point> locations = new ArrayList<>();
 
         IntStream.range(0, quantity).forEach(item -> {
             final PickLocationViewDO location = new PickLocationViewDO();
             location.setLine(LINES[RandomGenerator.generateUniformInt(LINES.length)]);
             setCoordinate(location, maxX, maxY);
-            locations.add(location);
+
+            final Point point = Point.newInstance(location);
+            locations.add(point);
         });
 
         return Collections.unmodifiableList(locations);
     }
 
-    public static Map<String, List<PickLocationViewDO>> generateGroupedLocations(final int quantity, final int maxX, final int maxY) {
-        final List<PickLocationViewDO> locations = new ArrayList<>();
-        final Map<String, List<PickLocationViewDO>> groupedLocations = new HashMap<>();
+    public static Map<String, List<Point>> generateGroupedLocations(final int quantity, final int maxX, final int maxY) {
+        final List<Point> locations = new ArrayList<>();
+        final Map<String, List<Point>> groupedLocations = new HashMap<>();
 
         IntStream.range(0, quantity).forEach(item -> {
             final PickLocationViewDO location = new PickLocationViewDO();
             location.setLine(LINES[0]);
             setCoordinate(location, maxX, maxY);
-            locations.add(location);
+
+            final Point point = Point.newInstance(location);
+            locations.add(point);
         });
 
         groupedLocations.put(LINES[0], locations);
         return Collections.unmodifiableMap(groupedLocations);
     }
 
-    public static Map<String, List<PickLocationViewDO>> generateGroupedLocations(final int quantity) {
+    public static Map<String, List<Point>> generateGroupedLocations(final int quantity) {
         return generateGroupedLocations(quantity, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
     }
 
@@ -59,30 +63,24 @@ public class TestLocationsGenerator {
         location.setY(RandomGenerator.generateUniformDouble(maxY));
     }
 
-    public static PickLocationViewDO createSingleLocation(final double x, final double y) {
+    public static Point createSingleLocation(final double x, final double y) {
         final PickLocationViewDO location = new PickLocationViewDO();
         location.setX(x);
         location.setY(y);
-        return location;
+        return Point.newInstance(location);
     }
 
-    public static List<Point> generatePoints(final int quantity) {
-        final List<PickLocationViewDO> locations = generateLocations(quantity, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
-        return wrapLocations(locations, RADIUS);
+    public static List<Point> generateLocationWithDistance(final int quantity, final int maxX, final int maxY, final int radius) {
+        final List<Point> locations = generateLocations(quantity, maxX, maxY);
+        return setReachabilityDistance(locations, radius);
     }
 
-    public static List<Point> generatePoints(final int quantity, final int maxX, final int maxY, final int radius) {
-        final List<PickLocationViewDO> locations = generateLocations(quantity, maxX, maxY);
-        return wrapLocations(locations, radius);
-    }
-
-    private static List<Point> wrapLocations(final List<PickLocationViewDO> locations, final int radius) {
+    private static List<Point> setReachabilityDistance(final List<Point> locations, final int radius) {
         final List<Point> points = new ArrayList<>();
 
         locations.forEach(location -> {
-            final Point point = new Point(location);
-            setReachabilityDistance(point, radius);
-            points.add(point);
+            setReachabilityDistance(location, radius);
+            points.add(location);
         });
 
         return points;

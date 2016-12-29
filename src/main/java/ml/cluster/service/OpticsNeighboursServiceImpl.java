@@ -18,36 +18,29 @@ import java.util.stream.Collectors;
 public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
 
     @Override
-    public List<PickLocationViewDO> getNeighboringLocations(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
+    public List<Point> getNeighboringLocations(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
         return matrix.getSegmentPickCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
                 .collect(Collectors.toList()).stream().map(MatrixCell::getLocations).collect(Collectors.toList()).stream().flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Point> getNearestNeighbours(final Point currentLocation, final List<PickLocationViewDO> neighboringLocations, final long radius) {
-        return getNearestNeighbours(currentLocation.getLocation(), neighboringLocations, radius);
-    }
-
-    @Override
-    public List<Point> getNearestNeighbours(final PickLocationViewDO currentLocation, final List<PickLocationViewDO> neighboringLocations, final long radius) {
-
+    public List<Point> getNearestNeighbours(final Point currentLocation, final List<Point> neighboringLocations, final long radius) {
         final List<Point> nearestNeighbours = new ArrayList<>();
 
         neighboringLocations.forEach(neighboringLocation -> {
 
             final double reachabilityDistance = getReachabilityDistance(currentLocation, neighboringLocation, radius);
             if (reachabilityDistance <= radius) {
-                final Point point = new Point(neighboringLocation);
-                nearestNeighbours.add(point);
+                neighboringLocation.setReachabilityDistance(reachabilityDistance);
+                nearestNeighbours.add(neighboringLocation);
             }
-
         });
 
         return nearestNeighbours;
     }
 
-    private double getReachabilityDistance(final PickLocationViewDO currentLocation, final PickLocationViewDO neighboringLocation, final long radius) {
+    private double getReachabilityDistance(final Point currentLocation, final Point neighboringLocation, final long radius) {
 
         final double distance = getLocationsDistance(currentLocation, neighboringLocation);
         if (isDirectlyDensityReachable(distance, radius)) {
@@ -57,12 +50,7 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
         }
     }
 
-
     private double getLocationsDistance(final Point currentLocation, final Point neighboringLocation) {
-        return getLocationsDistance(currentLocation.getLocation(), neighboringLocation.getLocation());
-    }
-
-    private double getLocationsDistance(final PickLocationViewDO currentLocation, final PickLocationViewDO neighboringLocation) {
         final double x = currentLocation.getX();
         final double y = currentLocation.getY();
         final double x1 = neighboringLocation.getX();
@@ -76,7 +64,7 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
 
     @Override
     public double getCoreDistance(final List<Point> nearestLocations, final int minPts) {
-        if (nearestLocations.size() < minPts - 1) {
+        if (nearestLocations.size() < minPts) {
             return Double.NaN;
 
         } else {

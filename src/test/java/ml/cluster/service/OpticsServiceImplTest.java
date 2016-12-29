@@ -1,5 +1,6 @@
 package ml.cluster.service;
 
+import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.PickSegment;
 import ml.cluster.error.MatrixException;
 import ml.cluster.to.PickLocationViewDO;
@@ -7,6 +8,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -21,14 +23,17 @@ public class OpticsServiceImplTest {
     private MatrixServiceImpl matrixService;
 
     @Spy
+    private OpticsNeighboursServiceImpl opticsNeighboursService;
+
+    @InjectMocks
     private OpticsServiceImpl opticsService;
 
     private Set<PickSegment> pickSegmentsMatrices;
 
     @Before
     public void setUp() throws MatrixException {
-        final Map<String, List<PickLocationViewDO>> segmentGroups = TestLocationsGenerator.generateGroupedLocations(50);
-        final Map<PickSegment, List<PickLocationViewDO>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+        final Map<String, List<Point>> segmentGroups = TestLocationsGenerator.generateGroupedLocations(100);
+        final Map<PickSegment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
         matrixService.generateSegmentMatrix(pickSegments);
         matrixService.assignPickLocationsToMatrixCells(pickSegments);
 
@@ -36,7 +41,7 @@ public class OpticsServiceImplTest {
         matrixService.assignNeighboringMatrixCells(pickSegmentsMatrices);
     }
 
-    @Ignore
+    @Test
     public void test() {
         opticsService.getOrderingPoints(pickSegmentsMatrices);
     }

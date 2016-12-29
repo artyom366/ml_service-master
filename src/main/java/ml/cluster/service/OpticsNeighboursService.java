@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface OpticsNeighboursService {
-    List<PickLocationViewDO> getNeighboringLocations(Set<Pair<Long, Long>> neighboringCells, FixedRadiusMatrix matrix);
+    List<Point> getNeighboringLocations(Set<Pair<Long, Long>> neighboringCells, FixedRadiusMatrix matrix);
 
-    List<Point> getNearestNeighbours(Point currentLocation, List<PickLocationViewDO> neighboringLocations, long radius);
-
-    List<Point> getNearestNeighbours(PickLocationViewDO currentLocation, List<PickLocationViewDO> neighboringLocations, long radius);
+    List<Point> getNearestNeighbours(Point currentLocation, List<Point> neighboringLocations, long radius);
 
     double getCoreDistance(List<Point> nearestLocations, int minPts);
 

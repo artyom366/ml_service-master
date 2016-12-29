@@ -1,5 +1,6 @@
 package ml.cluster.datastructure.matrix;
 
+import ml.cluster.datastructure.optics.Point;
 import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -14,7 +15,7 @@ public final class MatrixCell {
     private final long minX;
     private final long maxY;
     private final long minY;
-    private final List<PickLocationViewDO> locations;
+    private final List<Point> points;
     private final Set<Pair<Long, Long>> neighboringCells;
 
     public MatrixCell(final long maxX, final long minX, final long maxY, final long minY) {
@@ -22,20 +23,20 @@ public final class MatrixCell {
         this.minX = minX;
         this.maxY = maxY;
         this.minY = minY;
-        this.locations = new ArrayList<PickLocationViewDO>();
+        this.points = new ArrayList<Point>();
         this.neighboringCells = new HashSet<>();
     }
 
-    public List<PickLocationViewDO> getLocations() {
-        return locations;
+    public List<Point> getLocations() {
+        return points;
     }
 
     public Set<Pair<Long, Long>> getNeighboringCells() {
         return neighboringCells;
     }
 
-    public void addToPickLocations(final PickLocationViewDO pickLocationViewDO) {
-        this.locations.add(pickLocationViewDO);
+    public void addToPickPoints(final Point point) {
+        this.points.add(point);
     }
 
     public void addToNeighborPickingLocations(final Pair<Long, Long> neighbor) {
@@ -65,7 +66,7 @@ public final class MatrixCell {
     @Override
     public String toString() {
         return "MatrixCell {" +
-                ", locations=" + locations +
+                ", points=" + points +
                 ", neighboringCells=" + neighboringCells +
                 ", maxX=" + maxX +
                 ", minX=" + minX +
