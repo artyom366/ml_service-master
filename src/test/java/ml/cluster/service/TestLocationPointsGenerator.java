@@ -15,6 +15,8 @@ public class TestLocationPointsGenerator {
     private final static String[] LINES = {"AA", "BB", "CC"};
     private final static int RADIUS = 10;
 
+    private static List<Point> POINTS = generateSpecificLocationPoints();
+
     public static int getLocationLinesQuantity() {
         return LINES.length;
     }
@@ -93,43 +95,78 @@ public class TestLocationPointsGenerator {
 
     public static Map<String, List<Point>> generateGroupedSpecificLocationPoints() {
         final Map<String, List<Point>> groupedPoints = new HashMap<>();
-        final List<Point> points = generateSpecificLocationPoints();
+        POINTS = generateSpecificLocationPoints();
 
-        groupedPoints.put(LINES[0], points);
+        groupedPoints.put(LINES[0], POINTS);
         return Collections.unmodifiableMap(groupedPoints);
     }
 
     private static List<Point> generateSpecificLocationPoints() {
-        final Point point_0 = generateSingleLocationPoint(0, 0);
-        point_0.setCell(new ImmutablePair<>(0L, 0L));
 
-        final Point point_1 = generateSingleLocationPoint(1, 1);
-        point_1.setCell(new ImmutablePair<>(0L, 0L));
+        //start of the cluster 1
+        final Point point_0_0 = generateSingleLocationPoint(0, 0);
+        point_0_0.setCell(new ImmutablePair<>(0L, 0L));
 
-        final Point point_2 = generateSingleLocationPoint(1, 2);
-        point_2.setCell(new ImmutablePair<>(0L, 0L));
+        final Point point_0_1 = generateSingleLocationPoint(1, 1);
+        point_0_1.setCell(new ImmutablePair<>(0L, 0L));
 
-        final Point point_3 = generateSingleLocationPoint(2, 3);
-        point_3.setCell(new ImmutablePair<>(0L, 0L));
+        final Point point_0_2 = generateSingleLocationPoint(1, 2);
+        point_0_2.setCell(new ImmutablePair<>(0L, 0L));
 
-        final Point point_4 = generateSingleLocationPoint(8, 8);
-        point_4.setCell(new ImmutablePair<>(1L, 1L));
+        final Point point_0_3 = generateSingleLocationPoint(2, 3);
+        point_0_3.setCell(new ImmutablePair<>(0L, 0L));
+        //break of the cluster 1
 
-        final Point point_5 = generateSingleLocationPoint(7, 8);
-        point_5.setCell(new ImmutablePair<>(1L, 1L));
+        //outlier
+        final Point point_0 = generateSingleLocationPoint(9, 3);
+        point_0.setCell(new ImmutablePair<>(1L, 0L));
 
-        final Point point_6 = generateSingleLocationPoint(9, 9);
-        point_6.setCell(new ImmutablePair<>(1L, 1L));
+        //start of the cluster 2
+        final Point point_1_0 = generateSingleLocationPoint(8, 8);
+        point_1_0.setCell(new ImmutablePair<>(1L, 1L));
 
-        final Point point_7 = generateSingleLocationPoint(2, 2);
-        point_7.setCell(new ImmutablePair<>(0L, 0L));
+        final Point point_1_2 = generateSingleLocationPoint(7, 8);
+        point_1_2.setCell(new ImmutablePair<>(1L, 1L));
 
-        final Point point_8 = generateSingleLocationPoint(3, 2);
-        point_8.setCell(new ImmutablePair<>(0L, 0L));
+        final Point point_1_3 = generateSingleLocationPoint(9, 9);
+        point_1_3.setCell(new ImmutablePair<>(1L, 1L));
 
-        final Point point_9 = generateSingleLocationPoint(2, 1);
-        point_9.setCell(new ImmutablePair<>(0L, 0L));
+        //outlier
+        final Point point_1 = generateSingleLocationPoint(1, 9);
+        point_1.setCell(new ImmutablePair<>(0L, 1L));
 
-        return Arrays.asList(point_0, point_1, point_2, point_3, point_4, point_5, point_6, point_7, point_8, point_9);
+        final Point point_1_4 = generateSingleLocationPoint(9, 8);
+        point_1_4.setCell(new ImmutablePair<>(1L, 1L));
+
+        final Point point_1_5 = generateSingleLocationPoint(7, 9);
+        point_1_5.setCell(new ImmutablePair<>(1L, 1L));
+
+        final Point point_1_6 = generateSingleLocationPoint(8, 9);
+        point_1_6.setCell(new ImmutablePair<>(1L, 1L));
+        //end of the cluster 2
+
+        //continuation of the cluster 1
+        final Point point_0_4 = generateSingleLocationPoint(2, 2);
+        point_0_4.setCell(new ImmutablePair<>(0L, 0L));
+
+        final Point point_0_5 = generateSingleLocationPoint(3, 2);
+        point_0_5.setCell(new ImmutablePair<>(0L, 0L));
+
+        final Point point_0_6 = generateSingleLocationPoint(2, 1);
+        point_0_6.setCell(new ImmutablePair<>(0L, 0L));
+
+        final Point point_0_7 = generateSingleLocationPoint(2, 7);
+        point_0_7.setCell(new ImmutablePair<>(0L, 1L));
+        //end of the cluster 1
+
+        //outlier
+        final Point point_2 = generateSingleLocationPoint(0, 9);
+        point_1.setCell(new ImmutablePair<>(0L, 1L));
+
+        return Arrays.asList(point_0_0, point_0_1, point_0_2, point_0_3, point_0, point_1_0, point_1_2, point_1_3, point_1, point_1_4, point_1_5, point_1_6, point_0_4, point_0_5, point_0_6, point_0_7, point_2);
+    }
+
+    public static int getSpecificLocationPointsQuantity() {
+        return POINTS.size();
     }
 }
