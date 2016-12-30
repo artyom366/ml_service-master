@@ -30,7 +30,7 @@ public class OpticsServiceImplTest {
 
     @Before
     public void setUp() throws MatrixException {
-        final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(100);
+        final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(20, 10, 10);
         final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
         matrixService.generateSegmentMatrix(pickSegments);
         matrixService.assignLocationPointsToMatrixCells(pickSegments);

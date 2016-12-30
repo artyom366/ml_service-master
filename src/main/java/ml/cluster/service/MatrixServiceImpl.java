@@ -118,6 +118,7 @@ public class MatrixServiceImpl implements MatrixService {
                 locationPoints.forEach(locationPoint -> {
                     if (locationPointCoordinatesMatchesCell(locationPoint, cell)) {
                         cell.addToLocationPoints(locationPoint);
+                        locationPoint.setCell(position);
                     }
                 });
 
@@ -152,6 +153,10 @@ public class MatrixServiceImpl implements MatrixService {
 
             for (final Pair<Long, Long> position : cells.keySet()) {
                 final MatrixCell cell = cells.get(position);
+
+                if (cell.getLocationPoints().isEmpty()) {
+                    continue;
+                }
 
                 final long maxRow = segment.getMatrix().getRows();
                 final long maxColumn = segment.getMatrix().getColumns();

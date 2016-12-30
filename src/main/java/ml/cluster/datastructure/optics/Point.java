@@ -2,6 +2,7 @@ package ml.cluster.datastructure.optics;
 
 import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 
@@ -10,6 +11,7 @@ public final class Point {
 	private Boolean isProcessed;
 	private Double coreDistance;
 	private Double reachabilityDistance;
+	private Pair<Long, Long> cell;
 	private final Long id;
 	private final Double x;
 	private final Double y;
@@ -80,7 +82,7 @@ public final class Point {
 		this.quantityBase = quantityBase;
 		this.pslipTypeId = pslipTypeId;
 		this.dPack = dPack;
-		this.coreDistance = Double.NaN;
+		this.coreDistance = Double.POSITIVE_INFINITY;
 		this.reachabilityDistance = Double.POSITIVE_INFINITY;
 		this.isProcessed = false;
 	}
@@ -227,5 +229,13 @@ public final class Point {
 
 	public void setReachabilityDistance(double reachabilityDistance) {
 		this.reachabilityDistance = reachabilityDistance;
+	}
+
+	public Pair<Long, Long> getCell() {
+		return cell;
+	}
+
+	public void setCell(Pair<Long, Long> cell) {
+		this.cell = cell;
 	}
 }

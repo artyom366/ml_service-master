@@ -118,7 +118,7 @@ public class MatrixServiceImplTest {
 			final Map<Pair<Long, Long>, MatrixCell> cells = segment.getMatrix().getCells();
 
 			cells.forEach((position, cell) -> {
-				final List<Point> cellLocationPoints = cell.getLocations();
+				final List<Point> cellLocationPoints = cell.getLocationPoints();
 
 				cellLocationPoints.forEach(cellLocationPoint -> {
 					assertThat("Cell location point should be to the right from the left cell border", cellLocationPoint.getX() >= cell.getMinX(), is(true));
@@ -128,7 +128,7 @@ public class MatrixServiceImplTest {
 				});
 			});
 
-			final int numberOfLocationInMatrix = cells.values().stream().collect(Collectors.toList()).stream().map(MatrixCell::getLocations)
+			final int numberOfLocationInMatrix = cells.values().stream().collect(Collectors.toList()).stream().map(MatrixCell::getLocationPoints)
 				.flatMap(Collection::stream).collect(Collectors.toList()).size();
 
 			assertThat("Total number of location points in matrix should equal to the total number of location points", numberOfLocationInMatrix, is(NUMBER_OF_LOCATIONS_IN_MATRIX));

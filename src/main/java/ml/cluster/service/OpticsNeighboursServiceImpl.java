@@ -18,7 +18,7 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
     @Override
     public List<Point> getNeighboringLocationPoints(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
         return matrix.getCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
-                .collect(Collectors.toList()).stream().map(MatrixCell::getLocations).collect(Collectors.toList()).stream().flatMap(List::stream)
+                .collect(Collectors.toList()).stream().map(MatrixCell::getLocationPoints).collect(Collectors.toList()).stream().flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
@@ -40,7 +40,7 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
     @Override
     public double getCoreDistance(final Point currentLocationPoint, final List<Point> nearestLocationPoints, final int minPts) {
         if (nearestLocationPoints.size() < minPts) {
-            return Double.NaN;
+            return Double.POSITIVE_INFINITY;
 
         } else {
             return getMinPtsReachabilityDistance(currentLocationPoint, nearestLocationPoints, minPts);
@@ -83,7 +83,7 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
     }
 
     @Override
-    public double getNeighbourReachabilityDistance(final Point centerLocationPoint, final Point neighbourLocationPoint) {
-        return Math.max(centerLocationPoint.getCoreDistance(), getLocationsDistance(centerLocationPoint, neighbourLocationPoint));
+    public double getNeighbourReachabilityDistance(final Point currentLocationPoint, final Point neighbourLocationPoint) {
+        return Math.max(currentLocationPoint.getCoreDistance(), getLocationsDistance(currentLocationPoint, neighbourLocationPoint));
     }
 }

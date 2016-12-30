@@ -44,6 +44,7 @@ public class PointServiceImplTest {
 
         final List<Point> result = pointService.getPoints(locations);
         assertThat("Points should not be null", result, is(notNullValue()));
+        assertThat("Points count should be greater then 0", result.size() > 0, is(true));
         assertThat("Points count should be equal to location count", result.size(), is(locations.size()));
     }
 
