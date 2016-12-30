@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 @RunWith(MockitoJUnitRunner.class)
 public class OpticsServiceImplTest {
 
@@ -27,10 +31,11 @@ public class OpticsServiceImplTest {
     private OpticsServiceImpl opticsService;
 
     private Set<Segment> segmentsMatrices;
+    private final static int LOCATION_POINT_QUANTITY = 10;
 
     @Before
     public void setUp() throws MatrixException {
-        final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(20, 10, 10);
+        final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedSpecificLocationPoints();
         final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
         matrixService.generateSegmentMatrix(pickSegments);
         matrixService.assignLocationPointsToMatrixCells(pickSegments);
@@ -40,8 +45,10 @@ public class OpticsServiceImplTest {
     }
 
     @Test
-    public void test() {
-        opticsService.getOrderingPoints(segmentsMatrices);
+    public void testGetOrderingPoints() {
+        final List<Point> result = opticsService.getOrderingPoints(segmentsMatrices);
+        assertThat("", result, (is(notNullValue())));
+
     }
 
 }

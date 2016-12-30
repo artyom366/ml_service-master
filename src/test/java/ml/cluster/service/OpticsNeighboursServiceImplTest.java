@@ -29,7 +29,7 @@ public class OpticsNeighboursServiceImplTest {
     @Test
     public void testGetNearestNeighbours() throws Exception {
         final List<Point> neighboringLocations = TestLocationPointsGenerator.generateLocationPoints(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
-        final Point centerLocation = TestLocationPointsGenerator.createSingleLocationPoint(CENTER_X, CENTER_Y);
+        final Point centerLocation = TestLocationPointsGenerator.generateSingleLocationPoint(CENTER_X, CENTER_Y);
 
         final List<Point> result = opticsNeighboursService.getNearestNeighbours(centerLocation, neighboringLocations, RADIUS);
         assertThat("Nearest neighbours list should not be null", result, is(notNullValue()));
@@ -45,7 +45,7 @@ public class OpticsNeighboursServiceImplTest {
 
     @Test
     public void testGetCoreDistance() throws Exception {
-        final Point currentPoint = TestLocationPointsGenerator.createSingleLocationPoint(CENTER_X, CENTER_Y);
+        final Point currentPoint = TestLocationPointsGenerator.generateSingleLocationPoint(CENTER_X, CENTER_Y);
         final List<Point> nearestNeighbours = TestLocationPointsGenerator.generateLocationPointWithDistance(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE, RADIUS);
 
         final double result = opticsNeighboursService.getCoreDistance(currentPoint, nearestNeighbours, MIN_PTS);

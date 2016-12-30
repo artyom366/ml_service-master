@@ -26,11 +26,13 @@ public class OpticsServiceImpl implements OpticsService {
     }
 
     @Override
-	public void getOrderingPoints(final Set<Segment> segmentMatrices) {
+	public List<Point> getOrderingPoints(final Set<Segment> segmentMatrices) {
 		Validate.notEmpty(segmentMatrices, "Segments are not defined");
 
 		final Optics optics = new Optics.OpticsBuilder().minPts(5).build();
 		processSegmentMatrices(segmentMatrices, optics);
+
+		return optics.getOrderedLocationPoints();
 	}
 
 	private void processSegmentMatrices(final Set<Segment> segmentMatrices, final Optics optics) {
@@ -52,7 +54,7 @@ public class OpticsServiceImpl implements OpticsService {
 
 		for (final Point currentLocationPoint : locationPoints) {
 
-			final List<Point> nearestNeighbours = getNearestNeighbours(currentLocationPoint, matrix);
+			final List<Point> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
 			if (nearestNeighbours.isEmpty()) {
 				currentLocationPoint.setProcessed(true);
 				optics.addToOrderedLocationPoints(currentLocationPoint);
@@ -90,20 +92,18 @@ public class OpticsServiceImpl implements OpticsService {
 				}
 			}
 		});
-
 	}
 
 	private void processNeighbours(final FixedRadiusMatrix matrix, final Optics optics) {
 
 		while (true) {
-
 			final Point currentLocationPoint = nearestNeighboursQueue.poll();
 
 			if (currentLocationPoint == null) {
 				break;
 			}
 
-			final List<Point> nearestNeighbours = getNearestNeighbours(currentLocationPoint, matrix);
+			final List<Point> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
 			final double coreDistance = opticsNeighboursService.getCoreDistance(currentLocationPoint, nearestNeighbours, optics.getMinPts());
 
 			currentLocationPoint.setCoreDistance(coreDistance);
@@ -117,12 +117,5 @@ public class OpticsServiceImpl implements OpticsService {
 				updateNeighboursInfo(currentLocationPoint, nearestNeighbours);
 			}
 		}
-	}
-
-	private List<Point> getNearestNeighbours(final Point currentLocationPoint, final FixedRadiusMatrix matrix) {
-		final Pair<Long, Long> currentCellPosition = currentLocationPoint.getCell();
-		final MatrixCell currentCell = matrix.getCells().get(currentCellPosition);
-		final List<Point> neighboringLocationPoints = opticsNeighboursService.getNeighboringLocationPoints(currentCell.getNeighboringCells(), matrix);
-		return opticsNeighboursService.getNearestNeighbours(currentLocationPoint, neighboringLocationPoints, matrix.getRadius());
 	}
 }
