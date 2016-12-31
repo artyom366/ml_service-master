@@ -32,7 +32,7 @@ public class MatrixServiceImplTest {
 	public void testGetSegmentedLocationPoints() throws Exception {
 		final List<Point> points = TestLocationPointsGenerator.generateLocationPoints(NUMBER_OF_LOCATIONS);
 
-		final Map<String, List<Point>> result = matrixService.groupByLine(points);
+		final Map<String, List<Point>> result = matrixService.groupLocationPointsInSegment(points);
 		assertThat("Location point grouping result should not be null", result, is(notNullValue()));
 		assertThat("Grouped location lines count should be the equal to total location lines count", result.size(), is(TestLocationPointsGenerator.getLocationLinesQuantity()));
 
@@ -125,6 +125,8 @@ public class MatrixServiceImplTest {
 					assertThat("Cell location point should be to the left from the right cell border", cellLocationPoint.getX() <= cell.getMaxX(), is(true));
 					assertThat("Cell location point should be higher then the lower cell border", cellLocationPoint.getY() >= cell.getMinY(), is(true));
 					assertThat("Cell location point should be lower then the upper cell border", cellLocationPoint.getY() <= cell.getMaxY(), is(true));
+					assertThat("Cell location point row is not correct", cellLocationPoint.getCell().getLeft(), is(position.getLeft()));
+					assertThat("Cell location point column is not correct", cellLocationPoint.getCell().getRight(), is(position.getRight()));
 				});
 			});
 
@@ -156,52 +158,67 @@ public class MatrixServiceImplTest {
 
 		final MatrixCell cell0 = cells.get(new ImmutablePair<>(0L, 0L));
 		final Set<Pair<Long, Long>> neighboringCellsSet0 = cell0.getNeighboringCells();
-		assertThat("Bottom left cell should have the exact number of 3 neighboring cells", neighboringCellsSet0.size() == 3, is(true));
+		if (neighboringCellsSet0.isEmpty()) {
+			assertThat("Cell should be empty since it has no neighboring cells", cell0.getLocationPoints().isEmpty(), is(true));
 
-		List<Pair<Long, Long>> neighboringCells0 = new ArrayList<>(neighboringCellsSet0);
-		final Pair<Long, Long> cell0Neighbor0 = neighboringCells0.get(0);
-		final Pair<Long, Long> cell0Neighbor1 = neighboringCells0.get(1);
-		final Pair<Long, Long> cell0Neighbor2 = neighboringCells0.get(2);
-		assertThat("Neighboring cell row and column should equal to 1 and 1 accordingly", cell0Neighbor0.getLeft() == 1 && cell0Neighbor0.getRight() == 1, is(true));
-		assertThat("Neighboring cell row and column should equal to 0 and 1 accordingly", cell0Neighbor1.getLeft() == 0 && cell0Neighbor1.getRight() == 1, is(true));
-		assertThat("Neighboring cell row and column should equal to 1 and 0 accordingly", cell0Neighbor2.getLeft() == 1 && cell0Neighbor2.getRight() == 0, is(true));
+		} else {
+			assertThat("Bottom left cell should have the exact number of 3 neighboring cells", neighboringCellsSet0.size() == 3, is(true));
+
+			List<Pair<Long, Long>> neighboringCells0 = new ArrayList<>(neighboringCellsSet0);
+			final Pair<Long, Long> cell0Neighbor0 = neighboringCells0.get(0);
+			final Pair<Long, Long> cell0Neighbor1 = neighboringCells0.get(1);
+			final Pair<Long, Long> cell0Neighbor2 = neighboringCells0.get(2);
+			assertThat("Neighboring cell row and column should equal to 1 and 1 accordingly", cell0Neighbor0.getLeft() == 1 && cell0Neighbor0.getRight() == 1, is(true));
+			assertThat("Neighboring cell row and column should equal to 0 and 1 accordingly", cell0Neighbor1.getLeft() == 0 && cell0Neighbor1.getRight() == 1, is(true));
+			assertThat("Neighboring cell row and column should equal to 1 and 0 accordingly", cell0Neighbor2.getLeft() == 1 && cell0Neighbor2.getRight() == 0, is(true));
+		}
 
 		final MatrixCell cell1 = cells.get(new ImmutablePair<>(0L, 1L));
 		final Set<Pair<Long, Long>> neighboringCellsSet1 = cell1.getNeighboringCells();
-		assertThat("Bottom middle cell should have the exact number of 5 neighboring cells", neighboringCellsSet1.size() == 5, is(true));
+		if (neighboringCellsSet1.isEmpty()) {
+			assertThat("Cell should be empty since it has no neighboring cells", cell1.getLocationPoints().isEmpty(), is(true));
 
-		List<Pair<Long, Long>> neighboringCells1 = new ArrayList<>(neighboringCellsSet1);
-		final Pair<Long, Long> cell1Neighbor0 = neighboringCells1.get(0);
-		final Pair<Long, Long> cell1Neighbor1 = neighboringCells1.get(1);
-		final Pair<Long, Long> cell1Neighbor2 = neighboringCells1.get(2);
-		final Pair<Long, Long> cell1Neighbor3 = neighboringCells1.get(3);
-		final Pair<Long, Long> cell1Neighbor4 = neighboringCells1.get(4);
-		assertThat("Neighboring cell row and column should equal to 0 and 0 accordingly", cell1Neighbor0.getLeft() == 0 && cell1Neighbor0.getRight() == 0, is(true));
-		assertThat("Neighboring cell row and column should equal to 1 and 1 accordingly", cell1Neighbor1.getLeft() == 1 && cell1Neighbor1.getRight() == 1, is(true));
-		assertThat("Neighboring cell row and column should equal to 1 and 0 accordingly", cell1Neighbor2.getLeft() == 1 && cell1Neighbor2.getRight() == 0, is(true));
-		assertThat("Neighboring cell row and column should equal to 0 and 2 accordingly", cell1Neighbor3.getLeft() == 0 && cell1Neighbor3.getRight() == 2, is(true));
-		assertThat("Neighboring cell row and column should equal to 1 and 2 accordingly", cell1Neighbor4.getLeft() == 1 && cell1Neighbor4.getRight() == 2, is(true));
+		} else {
+			assertThat("Bottom middle cell should have the exact number of 5 neighboring cells", neighboringCellsSet1.size() == 5, is(true));
+
+			List<Pair<Long, Long>> neighboringCells1 = new ArrayList<>(neighboringCellsSet1);
+			final Pair<Long, Long> cell1Neighbor0 = neighboringCells1.get(0);
+			final Pair<Long, Long> cell1Neighbor1 = neighboringCells1.get(1);
+			final Pair<Long, Long> cell1Neighbor2 = neighboringCells1.get(2);
+			final Pair<Long, Long> cell1Neighbor3 = neighboringCells1.get(3);
+			final Pair<Long, Long> cell1Neighbor4 = neighboringCells1.get(4);
+			assertThat("Neighboring cell row and column should equal to 0 and 0 accordingly", cell1Neighbor0.getLeft() == 0 && cell1Neighbor0.getRight() == 0, is(true));
+			assertThat("Neighboring cell row and column should equal to 1 and 1 accordingly", cell1Neighbor1.getLeft() == 1 && cell1Neighbor1.getRight() == 1, is(true));
+			assertThat("Neighboring cell row and column should equal to 1 and 0 accordingly", cell1Neighbor2.getLeft() == 1 && cell1Neighbor2.getRight() == 0, is(true));
+			assertThat("Neighboring cell row and column should equal to 0 and 2 accordingly", cell1Neighbor3.getLeft() == 0 && cell1Neighbor3.getRight() == 2, is(true));
+			assertThat("Neighboring cell row and column should equal to 1 and 2 accordingly", cell1Neighbor4.getLeft() == 1 && cell1Neighbor4.getRight() == 2, is(true));
+		}
 
 		final MatrixCell cell4 = cells.get(new ImmutablePair<>(1L, 1L));
 		final Set<Pair<Long, Long>> neighboringCellsSet4 = cell4.getNeighboringCells();
-		assertThat("Center cell should have the exact number of 8 neighboring cells", neighboringCellsSet4.size() == 8, is(true));
+		if (neighboringCellsSet4.isEmpty()) {
+			assertThat("Cell should be empty since it has no neighboring cells", cell4.getLocationPoints().isEmpty(), is(true));
 
-		List<Pair<Long, Long>> neighboringCells4 = new ArrayList<>(neighboringCellsSet4);
-		final Pair<Long, Long> cell4Neighbor0 = neighboringCells4.get(0);
-		final Pair<Long, Long> cell4Neighbor1 = neighboringCells4.get(1);
-		final Pair<Long, Long> cell4Neighbor2 = neighboringCells4.get(2);
-		final Pair<Long, Long> cell4Neighbor3 = neighboringCells4.get(3);
-		final Pair<Long, Long> cell4Neighbor4 = neighboringCells4.get(4);
-		final Pair<Long, Long> cell4Neighbor5 = neighboringCells4.get(5);
-		final Pair<Long, Long> cell4Neighbor6 = neighboringCells4.get(6);
-		final Pair<Long, Long> cell4Neighbor7 = neighboringCells4.get(7);
-		assertThat("Neighboring cell row and column should equal to 0 and 0 accordingly", cell4Neighbor0.getLeft() == 0 && cell4Neighbor0.getRight() == 0, is(true));
-		assertThat("Neighboring cell row and column should equal to 2 and 2 accordingly", cell4Neighbor1.getLeft() == 2 && cell4Neighbor1.getRight() == 2, is(true));
-		assertThat("Neighboring cell row and column should equal to 0 and 1 accordingly", cell4Neighbor2.getLeft() == 0 && cell4Neighbor2.getRight() == 1, is(true));
-		assertThat("Neighboring cell row and column should equal to 1 and 0 accordingly", cell4Neighbor3.getLeft() == 1 && cell4Neighbor3.getRight() == 0, is(true));
-		assertThat("Neighboring cell row and column should equal to 0 and 2 accordingly", cell4Neighbor4.getLeft() == 0 && cell4Neighbor4.getRight() == 2, is(true));
-		assertThat("Neighboring cell row and column should equal to 2 and 0 accordingly", cell4Neighbor5.getLeft() == 2 && cell4Neighbor5.getRight() == 0, is(true));
-		assertThat("Neighboring cell row and column should equal to 1 and 2 accordingly", cell4Neighbor6.getLeft() == 1 && cell4Neighbor6.getRight() == 2, is(true));
-		assertThat("Neighboring cell row and column should equal to 2 and 1 accordingly", cell4Neighbor7.getLeft() == 2 && cell4Neighbor7.getRight() == 1, is(true));
+		} else {
+			assertThat("Center cell should have the exact number of 8 neighboring cells", neighboringCellsSet4.size() == 8, is(true));
+
+			List<Pair<Long, Long>> neighboringCells4 = new ArrayList<>(neighboringCellsSet4);
+			final Pair<Long, Long> cell4Neighbor0 = neighboringCells4.get(0);
+			final Pair<Long, Long> cell4Neighbor1 = neighboringCells4.get(1);
+			final Pair<Long, Long> cell4Neighbor2 = neighboringCells4.get(2);
+			final Pair<Long, Long> cell4Neighbor3 = neighboringCells4.get(3);
+			final Pair<Long, Long> cell4Neighbor4 = neighboringCells4.get(4);
+			final Pair<Long, Long> cell4Neighbor5 = neighboringCells4.get(5);
+			final Pair<Long, Long> cell4Neighbor6 = neighboringCells4.get(6);
+			final Pair<Long, Long> cell4Neighbor7 = neighboringCells4.get(7);
+			assertThat("Neighboring cell row and column should equal to 0 and 0 accordingly", cell4Neighbor0.getLeft() == 0 && cell4Neighbor0.getRight() == 0, is(true));
+			assertThat("Neighboring cell row and column should equal to 2 and 2 accordingly", cell4Neighbor1.getLeft() == 2 && cell4Neighbor1.getRight() == 2, is(true));
+			assertThat("Neighboring cell row and column should equal to 0 and 1 accordingly", cell4Neighbor2.getLeft() == 0 && cell4Neighbor2.getRight() == 1, is(true));
+			assertThat("Neighboring cell row and column should equal to 1 and 0 accordingly", cell4Neighbor3.getLeft() == 1 && cell4Neighbor3.getRight() == 0, is(true));
+			assertThat("Neighboring cell row and column should equal to 0 and 2 accordingly", cell4Neighbor4.getLeft() == 0 && cell4Neighbor4.getRight() == 2, is(true));
+			assertThat("Neighboring cell row and column should equal to 2 and 0 accordingly", cell4Neighbor5.getLeft() == 2 && cell4Neighbor5.getRight() == 0, is(true));
+			assertThat("Neighboring cell row and column should equal to 1 and 2 accordingly", cell4Neighbor6.getLeft() == 1 && cell4Neighbor6.getRight() == 2, is(true));
+			assertThat("Neighboring cell row and column should equal to 2 and 1 accordingly", cell4Neighbor7.getLeft() == 2 && cell4Neighbor7.getRight() == 1, is(true));
+		}
 	}
 }

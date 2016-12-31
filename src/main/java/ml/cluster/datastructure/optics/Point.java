@@ -238,4 +238,107 @@ public final class Point {
 	public void setCell(Pair<Long, Long> cell) {
 		this.cell = cell;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Point point = (Point) o;
+
+		if (isProcessed != null ? !isProcessed.equals(point.isProcessed) : point.isProcessed != null) return false;
+		if (coreDistance != null ? !coreDistance.equals(point.coreDistance) : point.coreDistance != null) return false;
+		if (reachabilityDistance != null ? !reachabilityDistance.equals(point.reachabilityDistance) : point.reachabilityDistance != null)
+			return false;
+		if (cell != null ? !cell.equals(point.cell) : point.cell != null) return false;
+		if (id != null ? !id.equals(point.id) : point.id != null) return false;
+		if (x != null ? !x.equals(point.x) : point.x != null) return false;
+		if (y != null ? !y.equals(point.y) : point.y != null) return false;
+		if (line != null ? !line.equals(point.line) : point.line != null) return false;
+		if (scanCode != null ? !scanCode.equals(point.scanCode) : point.scanCode != null) return false;
+		if (deliveryId != null ? !deliveryId.equals(point.deliveryId) : point.deliveryId != null) return false;
+		if (customerId != null ? !customerId.equals(point.customerId) : point.customerId != null) return false;
+		if (trx != null ? !trx.equals(point.trx) : point.trx != null) return false;
+		if (coSeq != null ? !coSeq.equals(point.coSeq) : point.coSeq != null) return false;
+		if (clientId != null ? !clientId.equals(point.clientId) : point.clientId != null) return false;
+		if (wrin != null ? !wrin.equals(point.wrin) : point.wrin != null) return false;
+		if (quantity != null ? !quantity.equals(point.quantity) : point.quantity != null) return false;
+		if (goodsId != null ? !goodsId.equals(point.goodsId) : point.goodsId != null) return false;
+		if (warehouseId != null ? !warehouseId.equals(point.warehouseId) : point.warehouseId != null) return false;
+		if (location != null ? !location.equals(point.location) : point.location != null) return false;
+		if (pickSeq != null ? !pickSeq.equals(point.pickSeq) : point.pickSeq != null) return false;
+		if (pickZoneId != null ? !pickZoneId.equals(point.pickZoneId) : point.pickZoneId != null) return false;
+		if (grWeight != null ? !grWeight.equals(point.grWeight) : point.grWeight != null) return false;
+		if (cbm != null ? !cbm.equals(point.cbm) : point.cbm != null) return false;
+		if (refillEvent != null ? !refillEvent.equals(point.refillEvent) : point.refillEvent != null) return false;
+		if (quantityBase != null ? !quantityBase.equals(point.quantityBase) : point.quantityBase != null) return false;
+		if (pslipTypeId != null ? !pslipTypeId.equals(point.pslipTypeId) : point.pslipTypeId != null) return false;
+		return dPack != null ? dPack.equals(point.dPack) : point.dPack == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = isProcessed != null ? isProcessed.hashCode() : 0;
+		result = 31 * result + (coreDistance != null ? coreDistance.hashCode() : 0);
+		result = 31 * result + (reachabilityDistance != null ? reachabilityDistance.hashCode() : 0);
+		result = 31 * result + (cell != null ? cell.hashCode() : 0);
+		result = 31 * result + (id != null ? id.hashCode() : 0);
+		result = 31 * result + (x != null ? x.hashCode() : 0);
+		result = 31 * result + (y != null ? y.hashCode() : 0);
+		result = 31 * result + (line != null ? line.hashCode() : 0);
+		result = 31 * result + (scanCode != null ? scanCode.hashCode() : 0);
+		result = 31 * result + (deliveryId != null ? deliveryId.hashCode() : 0);
+		result = 31 * result + (customerId != null ? customerId.hashCode() : 0);
+		result = 31 * result + (trx != null ? trx.hashCode() : 0);
+		result = 31 * result + (coSeq != null ? coSeq.hashCode() : 0);
+		result = 31 * result + (clientId != null ? clientId.hashCode() : 0);
+		result = 31 * result + (wrin != null ? wrin.hashCode() : 0);
+		result = 31 * result + (quantity != null ? quantity.hashCode() : 0);
+		result = 31 * result + (goodsId != null ? goodsId.hashCode() : 0);
+		result = 31 * result + (warehouseId != null ? warehouseId.hashCode() : 0);
+		result = 31 * result + (location != null ? location.hashCode() : 0);
+		result = 31 * result + (pickSeq != null ? pickSeq.hashCode() : 0);
+		result = 31 * result + (pickZoneId != null ? pickZoneId.hashCode() : 0);
+		result = 31 * result + (grWeight != null ? grWeight.hashCode() : 0);
+		result = 31 * result + (cbm != null ? cbm.hashCode() : 0);
+		result = 31 * result + (refillEvent != null ? refillEvent.hashCode() : 0);
+		result = 31 * result + (quantityBase != null ? quantityBase.hashCode() : 0);
+		result = 31 * result + (pslipTypeId != null ? pslipTypeId.hashCode() : 0);
+		result = 31 * result + (dPack != null ? dPack.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "Point {" +
+				"isProcessed=" + isProcessed +
+				", coreDistance=" + coreDistance +
+				", reachabilityDistance=" + reachabilityDistance +
+				", cell=" + cell +
+				", id=" + id +
+				", x=" + x +
+				", y=" + y +
+				", line='" + line + '\'' +
+				", scanCode='" + scanCode + '\'' +
+				", deliveryId=" + deliveryId +
+				", customerId=" + customerId +
+				", trx=" + trx +
+				", coSeq=" + coSeq +
+				", clientId=" + clientId +
+				", wrin=" + wrin +
+				", quantity=" + quantity +
+				", goodsId=" + goodsId +
+				", warehouseId='" + warehouseId + '\'' +
+				", location='" + location + '\'' +
+				", pickSeq=" + pickSeq +
+				", pickZoneId='" + pickZoneId + '\'' +
+				", grWeight=" + grWeight +
+				", cbm=" + cbm +
+				", refillEvent=" + refillEvent +
+				", quantityBase=" + quantityBase +
+				", pslipTypeId=" + pslipTypeId +
+				", dPack='" + dPack + '\'' +
+				'}';
+	}
 }

@@ -1,4 +1,4 @@
-package ml.cluster.error;
+package ml.cluster.error.matrix;
 
 public class MatrixNoAreaSpecifiedException extends MatrixException {
 

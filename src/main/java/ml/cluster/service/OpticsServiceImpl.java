@@ -29,10 +29,10 @@ public class OpticsServiceImpl implements OpticsService {
 	public List<Point> getOrderingPoints(final Set<Segment> segmentMatrices) {
 		Validate.notEmpty(segmentMatrices, "Segments are not defined");
 
-		final Optics optics = new Optics.OpticsBuilder().minPts(5).build();
+		final Optics optics = new Optics.OpticsBuilder().build();
 		processSegmentMatrices(segmentMatrices, optics);
 
-		return optics.getOrderedLocationPoints();
+		return Collections.unmodifiableList(optics.getOrderedLocationPoints());
 	}
 
 	private void processSegmentMatrices(final Set<Segment> segmentMatrices, final Optics optics) {
@@ -56,42 +56,44 @@ public class OpticsServiceImpl implements OpticsService {
 
 			final List<Point> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
 			if (nearestNeighbours.isEmpty()) {
-				currentLocationPoint.setProcessed(true);
-				optics.addToOrderedLocationPoints(currentLocationPoint);
+				saveProcessedLocationPoint(currentLocationPoint, optics);
+				continue;
 			}
 
-			final double coreDistance = opticsNeighboursService.getCoreDistance(currentLocationPoint, nearestNeighbours, optics.getMinPts());
-
-			if (coreDistance < Double.POSITIVE_INFINITY) {
-				currentLocationPoint.setCoreDistance(coreDistance);
-
-				if (!currentLocationPoint.isProcessed()) {
-					currentLocationPoint.setProcessed(true);
-					optics.addToOrderedLocationPoints(currentLocationPoint);
-				}
-			}
-
+			processCellLocationPoint(currentLocationPoint, nearestNeighbours, optics);
 			updateNeighboursInfo(currentLocationPoint, nearestNeighbours);
 			processNeighbours(matrix, optics);
 		}
 	}
 
-	private void updateNeighboursInfo(final Point coreLocationPoint, final List<Point> nearestNeighbours) {
+	private void processCellLocationPoint(final Point currentLocationPoint, final List<Point> nearestNeighbours, final Optics optics) {
+		final double coreDistance = opticsNeighboursService.getCoreDistance(currentLocationPoint, nearestNeighbours, optics.getMinPts());
 
+		if (coreDistance < Double.POSITIVE_INFINITY) {
+			currentLocationPoint.setCoreDistance(coreDistance);
+			saveProcessedLocationPoint(currentLocationPoint, optics);
+		}
+
+	}
+
+	private void updateNeighboursInfo(final Point coreLocationPoint, final List<Point> nearestNeighbours) {
 		nearestNeighbours.forEach(currentLocationPoint -> {
 			if (!currentLocationPoint.isProcessed()) {
-
-				final double neighbourReachabilityDistance = opticsNeighboursService.getNeighbourReachabilityDistance(coreLocationPoint, currentLocationPoint);
-
-				if (currentLocationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY) {
-					currentLocationPoint.setReachabilityDistance(neighbourReachabilityDistance);
-					nearestNeighboursQueue.add(currentLocationPoint);
-
-				} else if (neighbourReachabilityDistance < currentLocationPoint.getReachabilityDistance()) {
-					currentLocationPoint.setReachabilityDistance(neighbourReachabilityDistance);
-				}
+				updateNeighbourInfo(coreLocationPoint, currentLocationPoint);
 			}
 		});
+	}
+
+	private void updateNeighbourInfo(final Point coreLocationPoint, final Point currentLocationPoint) {
+		final double neighbourReachabilityDistance = opticsNeighboursService.getNeighbourReachabilityDistance(coreLocationPoint, currentLocationPoint);
+
+		if (currentLocationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY) {
+			currentLocationPoint.setReachabilityDistance(neighbourReachabilityDistance);
+			nearestNeighboursQueue.add(currentLocationPoint);
+
+		} else if (neighbourReachabilityDistance < currentLocationPoint.getReachabilityDistance()) {
+			currentLocationPoint.setReachabilityDistance(neighbourReachabilityDistance);
+		}
 	}
 
 	private void processNeighbours(final FixedRadiusMatrix matrix, final Optics optics) {
@@ -107,15 +109,18 @@ public class OpticsServiceImpl implements OpticsService {
 			final double coreDistance = opticsNeighboursService.getCoreDistance(currentLocationPoint, nearestNeighbours, optics.getMinPts());
 
 			currentLocationPoint.setCoreDistance(coreDistance);
-
-			if (!currentLocationPoint.isProcessed()) {
-				currentLocationPoint.setProcessed(true);
-				optics.addToOrderedLocationPoints(currentLocationPoint);
-			}
+			saveProcessedLocationPoint(currentLocationPoint, optics);
 
 			if (coreDistance < Double.POSITIVE_INFINITY) {
 				updateNeighboursInfo(currentLocationPoint, nearestNeighbours);
 			}
+		}
+	}
+
+	private void saveProcessedLocationPoint(final Point currentLocationPoint, final Optics optics) {
+		if (!currentLocationPoint.isProcessed()) {
+			currentLocationPoint.setProcessed(true);
+			optics.addToOrderedLocationPoints(currentLocationPoint);
 		}
 	}
 }

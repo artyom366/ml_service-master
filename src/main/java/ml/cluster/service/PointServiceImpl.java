@@ -9,6 +9,7 @@ import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service("pointService")
@@ -26,7 +27,7 @@ public class PointServiceImpl implements PointService {
             points.add(point);
         }
 
-        return points;
+        return Collections.unmodifiableList(points);
     }
 
     private void validateLocation(final PickLocationViewDO location) throws LocationException {

@@ -86,7 +86,7 @@ public class TestLocationPointsGenerator {
             points.add(location);
         });
 
-        return points;
+        return Collections.unmodifiableList(points);
     }
 
     private static void setReachabilityDistance(final Point point, final int radius) {

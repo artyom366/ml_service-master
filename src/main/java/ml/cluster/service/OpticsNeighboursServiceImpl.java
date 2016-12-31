@@ -3,6 +3,7 @@ package ml.cluster.service;
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.optics.Point;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,9 @@ import java.util.stream.Collectors;
 public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
 
     protected List<Point> getNeighboringLocationPoints(final Set<Pair<Long, Long>> neighboringCells, final FixedRadiusMatrix matrix) {
-        return matrix.getCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
+        return Collections.unmodifiableList(matrix.getCells().entrySet().stream().filter(map -> neighboringCells.contains(map.getKey())).map(Map.Entry::getValue)
                 .collect(Collectors.toList()).stream().map(MatrixCell::getLocationPoints).collect(Collectors.toList()).stream().flatMap(List::stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     protected List<Point> getNearestNeighbours(final Point currentLocationPoint, final List<Point> neighboringLocationPoints, final long radius) {
@@ -34,6 +35,9 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
 
     @Override
     public double getCoreDistance(final Point currentLocationPoint, final List<Point> nearestLocationPoints, final int minPts) {
+        Validate.notNull(currentLocationPoint, "Current location point is not defined");
+        Validate.notEmpty(nearestLocationPoints, "Nearest location point are not defined");
+
         if (nearestLocationPoints.size() < minPts) {
             return Double.POSITIVE_INFINITY;
 
@@ -56,7 +60,6 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
     }
 
     private double getReachabilityDistance(final Point currentLocationPoint, final Point neighboringLocationPoints, final long radius) {
-
         final double distance = getLocationsDistance(currentLocationPoint, neighboringLocationPoints);
         if (isDirectlyDensityReachable(distance, radius)) {
             return distance;
@@ -79,11 +82,16 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
 
     @Override
     public double getNeighbourReachabilityDistance(final Point currentLocationPoint, final Point neighbourLocationPoint) {
+        Validate.notNull(currentLocationPoint, "Current location point is not defined");
+        Validate.notNull(neighbourLocationPoint, "Neighbour location point is not defined");
         return Math.max(currentLocationPoint.getCoreDistance(), getLocationsDistance(currentLocationPoint, neighbourLocationPoint));
     }
 
     @Override
     public List<Point> getNearestNeighbours(final Point currentLocationPoint, final FixedRadiusMatrix matrix) {
+        Validate.notNull(currentLocationPoint, "Current location point is not defined");
+        Validate.notNull(matrix, "Fixed radius matrix is not defined");
+
         final Pair<Long, Long> currentCellPosition = currentLocationPoint.getCell();
         final MatrixCell currentCell = matrix.getCells().get(currentCellPosition);
 

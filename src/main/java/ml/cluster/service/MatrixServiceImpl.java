@@ -4,10 +4,10 @@ import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.Segment;
-import ml.cluster.error.CellNeighborsInconsistencyException;
-import ml.cluster.error.CellNoAreaSpecifiedException;
-import ml.cluster.error.MatrixException;
-import ml.cluster.error.MatrixNoAreaSpecifiedException;
+import ml.cluster.error.matrix.CellNeighborsInconsistencyException;
+import ml.cluster.error.matrix.CellNoAreaSpecifiedException;
+import ml.cluster.error.matrix.MatrixException;
+import ml.cluster.error.matrix.MatrixNoAreaSpecifiedException;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -23,13 +23,13 @@ public class MatrixServiceImpl implements MatrixService {
     public Set<Segment> getSegmentedLocationPoints(final List<Point> points) throws MatrixException {
         Validate.notEmpty(points, "Location points are not defined");
 
-        final Map<String, List<Point>> segmentGroups = groupByLine(points);
+        final Map<String, List<Point>> segmentGroups = groupLocationPointsInSegment(points);
         final Map<Segment, List<Point>> segments = defineSegmentBoundaries(segmentGroups);
 
         return generateSegmentMatricesAndCells(segments);
     }
 
-    protected Map<String, List<Point>> groupByLine(final List<Point> points) {
+    protected Map<String, List<Point>> groupLocationPointsInSegment(final List<Point> points) {
         return Collections.unmodifiableMap(points.stream().collect(Collectors.groupingBy(Point::getLine)));
     }
 
@@ -49,6 +49,12 @@ public class MatrixServiceImpl implements MatrixService {
         });
 
         return Collections.unmodifiableMap(segments);
+    }
+
+    protected Set<Segment> generateSegmentMatricesAndCells(final Map<Segment, List<Point>> segments) throws MatrixException {
+        generateSegmentMatrix(segments);
+        assignLocationPointsToMatrixCells(segments);
+        return finishSegmentMatrixCreation(segments);
     }
 
     protected void generateSegmentMatrix(final Map<Segment, List<Point>> segments) throws MatrixException {
@@ -130,13 +136,7 @@ public class MatrixServiceImpl implements MatrixService {
         return Point.getX() < cell.getMaxX() && Point.getX() >= cell.getMinX() && Point.getY() < cell.getMaxY() && Point.getY() >= cell.getMinY();
     }
 
-    protected Set<Segment> generateSegmentMatricesAndCells(final Map<Segment, List<Point>> segments) throws MatrixException {
-        generateSegmentMatrix(segments);
-        assignLocationPointsToMatrixCells(segments);
-        return finishSegmentMatrix(segments);
-    }
-
-    private Set<Segment> finishSegmentMatrix(final Map<Segment, List<Point>> segments) throws MatrixException {
+    private Set<Segment> finishSegmentMatrixCreation(final Map<Segment, List<Point>> segments) throws MatrixException {
         final Set<Segment> segmentMatrices = getSegments(segments);
         assignNeighboringMatrixCells(segmentMatrices);
         return segmentMatrices;
@@ -206,6 +206,6 @@ public class MatrixServiceImpl implements MatrixService {
             throw new CellNeighborsInconsistencyException(neighbors.size(), refinedNeighbors.size());
         }
 
-        return neighbors;
+        return Collections.unmodifiableSet(neighbors);
     }
 }

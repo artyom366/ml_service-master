@@ -2,7 +2,7 @@ package ml.cluster.service;
 
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.Segment;
-import ml.cluster.error.MatrixException;
+import ml.cluster.error.matrix.MatrixException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
