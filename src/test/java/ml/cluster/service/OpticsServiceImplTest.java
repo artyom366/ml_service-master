@@ -77,7 +77,7 @@ public class OpticsServiceImplTest {
             }
         }
 
-        assertThat("There should be 2 cluster, hence 2 core location points", coreLocationPointsCounter, is(2));
+        assertThat("There should be 2 clusters, hence 2 core location points", coreLocationPointsCounter, is(2));
         assertThat("There should be 12 cluster location point in all the clusters", clusterLocationPointCounter, is(12));
         assertThat("There should be 2 border location point in all the clusters", borderLocationPointCounter, is(2));
         assertThat("There should be 1 outlier location point", outlierLocationPointsCounter, is(1));

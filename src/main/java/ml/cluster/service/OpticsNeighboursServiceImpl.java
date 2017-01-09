@@ -54,7 +54,6 @@ public class OpticsNeighboursServiceImpl implements OpticsNeighboursService {
             distances.add(reachabilityDistance);
         });
 
-
         distances.sort(Double::compareTo);
         return distances.get(minPts - 1);
     }
