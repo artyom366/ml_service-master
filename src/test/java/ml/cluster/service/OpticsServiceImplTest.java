@@ -1,8 +1,16 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.optics.Point;
-import ml.cluster.datastructure.segment.Segment;
-import ml.cluster.error.matrix.MatrixException;
+import static ml.cluster.service.TestLocationPointsGenerator.generateGroupedSpecificLocationPoints;
+import static ml.cluster.service.TestLocationPointsGenerator.getSpecificLocationPointsQuantity;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,16 +18,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static ml.cluster.service.TestLocationPointsGenerator.generateGroupedSpecificLocationPoints;
-import static ml.cluster.service.TestLocationPointsGenerator.getSpecificLocationPointsQuantity;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import ml.cluster.datastructure.optics.OpticsPoint;
+import ml.cluster.datastructure.segment.Segment;
+import ml.cluster.error.matrix.MatrixException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpticsServiceImplTest {
@@ -37,8 +38,8 @@ public class OpticsServiceImplTest {
 
     @Before
     public void setUp() throws MatrixException {
-        final Map<String, List<Point>> segmentGroups = generateGroupedSpecificLocationPoints();
-        final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+        final Map<String, List<OpticsPoint>> segmentGroups = generateGroupedSpecificLocationPoints();
+        final Map<Segment, List<OpticsPoint>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
         matrixService.generateSegmentMatrix(pickSegments);
         matrixService.assignLocationPointsToMatrixCells(pickSegments);
 
@@ -48,7 +49,7 @@ public class OpticsServiceImplTest {
 
     @Test
     public void testGetOrderingPoints() {
-        final List<Point> result = opticsService.getOrderingPoints(segmentsMatrices);
+        final List<OpticsPoint> result = opticsService.getOrderingPoints(segmentsMatrices);
         assertThat("Ordering location points should not be null", result, (is(notNullValue())));
         assertThat("Ordering location points count should equals to total location points count", result.size(), is(getSpecificLocationPointsQuantity()));
 
@@ -57,7 +58,7 @@ public class OpticsServiceImplTest {
         int borderLocationPointCounter = 0;
         int outlierLocationPointsCounter = 0;
 
-        for (final Point locationPoint : result) {
+        for (final OpticsPoint locationPoint : result) {
             assertThat("Ordering location point should be processed", locationPoint.isProcessed(), is(true));
 
             if (isCoreLocationPoint(locationPoint)) {
@@ -83,19 +84,19 @@ public class OpticsServiceImplTest {
         assertThat("There should be 1 outlier location point", outlierLocationPointsCounter, is(1));
     }
 
-    private boolean isCoreLocationPoint(final Point locationPoint) {
+    private boolean isCoreLocationPoint(final OpticsPoint locationPoint) {
         return locationPoint.getCoreDistance() < Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY;
     }
 
-    private boolean isClusterLocationPoint(final Point locationPoint) {
+    private boolean isClusterLocationPoint(final OpticsPoint locationPoint) {
         return locationPoint.getCoreDistance() < Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 
-    private boolean isBorderLocationPoint(final Point locationPoint) {
+    private boolean isBorderLocationPoint(final OpticsPoint locationPoint) {
         return locationPoint.getCoreDistance() == Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 
-    private boolean isOutlierLocationPoint(final Point locationPoint) {
+    private boolean isOutlierLocationPoint(final OpticsPoint locationPoint) {
         return locationPoint.getCoreDistance() == Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY;
     }
 

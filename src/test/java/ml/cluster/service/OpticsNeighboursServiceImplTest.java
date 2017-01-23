@@ -1,5 +1,6 @@
 package ml.cluster.service;
 
+import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,10 +29,10 @@ public class OpticsNeighboursServiceImplTest {
 
     @Test
     public void testGetNearestNeighbours() throws Exception {
-        final List<Point> neighboringLocations = TestLocationPointsGenerator.generateLocationPoints(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
-        final Point centerLocation = TestLocationPointsGenerator.generateSingleLocationPoint(CENTER_X, CENTER_Y);
+        final List<OpticsPoint> neighboringLocations = TestLocationPointsGenerator.generateLocationPoints(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
+        final OpticsPoint centerLocation = TestLocationPointsGenerator.generateSingleLocationPoint(CENTER_X, CENTER_Y);
 
-        final List<Point> result = opticsNeighboursService.getNearestNeighbours(centerLocation, neighboringLocations, RADIUS);
+        final List<OpticsPoint> result = opticsNeighboursService.getNearestNeighbours(centerLocation, neighboringLocations, RADIUS);
         assertThat("Nearest neighbours list should not be null", result, is(notNullValue()));
         assertThat("Nearest neighbours quantity should be greater then 0", result.isEmpty(), is(false));
         assertThat("Nearest neighbours quantity should be less then all neighboring locations quantity", result.size() < neighboringLocations.size(), is(true));
@@ -46,7 +47,7 @@ public class OpticsNeighboursServiceImplTest {
     @Test
     public void testGetCoreDistance() throws Exception {
         final Point currentPoint = TestLocationPointsGenerator.generateSingleLocationPoint(CENTER_X, CENTER_Y);
-        final List<Point> nearestNeighbours = TestLocationPointsGenerator.generateLocationPointWithDistance(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE, RADIUS);
+        final List<OpticsPoint> nearestNeighbours = TestLocationPointsGenerator.generateLocationPointWithDistance(NEIGHBOURING_LOCATIONS_COUNT, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE, RADIUS);
 
         final double result = opticsNeighboursService.getCoreDistance(currentPoint, nearestNeighbours, MIN_PTS);
         assertThat("Core distance should be a defined double value", result != Double.NaN, is(true));

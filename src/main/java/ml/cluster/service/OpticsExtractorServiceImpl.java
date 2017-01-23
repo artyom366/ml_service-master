@@ -1,73 +1,67 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.optics.Cluster;
-import ml.cluster.datastructure.optics.Point;
-import org.apache.commons.lang3.Validate;
-import org.springframework.stereotype.Service;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
+
+import org.apache.commons.lang3.Validate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import ml.cluster.datastructure.optics.Cluster;
+import ml.cluster.datastructure.optics.OpticsPoint;
+import ml.cluster.datastructure.optics.Point;
 
 @Service("opticsExtractorService")
 public class OpticsExtractorServiceImpl implements OpticsExtractorService {
 
+    @Autowired
+    private PointService pointService;
+
     @Override
-    public List<Cluster> extractClusters(final List<Point> optics) {
+    public List<Cluster> extractClusters(final List<OpticsPoint> optics) {
         Validate.notEmpty(optics, "Ordering points are not defined");
 
         final List<Cluster> clusters = new LinkedList<>();
+        final ListIterator<OpticsPoint> iterator = optics.listIterator();
 
-        final Iterator<Point> iterator = optics.iterator();
         while (iterator.hasNext()) {
-            final Point point = iterator.next();
-
-            if (isCorePoint(point)) {
-                final Cluster cluster = extractCluster(iterator);
-                clusters.add(cluster);
-            }
+            final OpticsPoint point = iterator.next();
+            startClusterFormation(point, iterator, clusters);
         }
 
         return clusters;
     }
 
-    private Cluster extractCluster(final Iterator<Point> iterator) {
+    private void startClusterFormation(final OpticsPoint point, final Iterator<OpticsPoint> iterator, final List<Cluster> clusters) {
+        if (pointService.isCorePoint(point)) {
+            final Cluster cluster = extractCluster(iterator, point, clusters);
+            clusters.add(cluster);
+        }
+    }
+
+    private Cluster extractCluster(final Iterator<OpticsPoint> iterator, final OpticsPoint corePoint, final List<Cluster> clusters) {
         final Cluster cluster = new Cluster();
+        cluster.addToExtractedCluster(corePoint);
 
         while (iterator.hasNext()) {
-            final Point point = iterator.next();
+            final OpticsPoint point = iterator.next();
 
-            if (isCorePoint(point)) {
+            if (pointService.isCorePoint(point)) {
+                startClusterFormation(point, iterator, clusters);
+
+            } else if (pointService.isClusterPoint(point)) {
                 cluster.addToExtractedCluster(point);
 
-            } else if (isClusterPoint(point)) {
+            } else if (pointService.isBorderPoint(point)) {
                 cluster.addToExtractedCluster(point);
 
-            } else if (isBorderPoint(point)) {
-                cluster.addToExtractedCluster(point);
-
-            } else if (isOutlierPoint(point)) {
+            } else if (pointService.isOutlierPoint(point)) {
                 break;
             }
         }
 
         return cluster;
-    }
-
-    //todo to separate class
-    private boolean isOutlierPoint(final Point point) {
-        return point.getReachabilityDistance() == Double.POSITIVE_INFINITY && point.getCoreDistance() == Double.POSITIVE_INFINITY;
-    }
-
-    private boolean isCorePoint(final Point locationPoint) {
-        return locationPoint.getCoreDistance() < Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY;
-    }
-
-    private boolean isClusterPoint(final Point locationPoint) {
-        return locationPoint.getCoreDistance() < Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() < Double.POSITIVE_INFINITY;
-    }
-
-    private boolean isBorderPoint(final Point locationPoint) {
-        return locationPoint.getCoreDistance() == Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 }

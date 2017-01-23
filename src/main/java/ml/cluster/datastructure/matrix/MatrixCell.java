@@ -1,5 +1,6 @@
 package ml.cluster.datastructure.matrix;
 
+import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -14,7 +15,7 @@ public final class MatrixCell {
     private final long minX;
     private final long maxY;
     private final long minY;
-    private final List<Point> locationPoints;
+    private final List<OpticsPoint> locationPoints;
     private final Set<Pair<Long, Long>> neighboringCells;
 
     public MatrixCell(final long maxX, final long minX, final long maxY, final long minY) {
@@ -26,7 +27,7 @@ public final class MatrixCell {
         this.neighboringCells = new HashSet<>();
     }
 
-    public List<Point> getLocationPoints() {
+    public List<OpticsPoint> getLocationPoints() {
         return locationPoints;
     }
 
@@ -34,7 +35,7 @@ public final class MatrixCell {
         return neighboringCells;
     }
 
-    public void addToLocationPoints(final Point point) {
+    public void addToLocationPoints(final OpticsPoint point) {
         this.locationPoints.add(point);
     }
 

@@ -1,21 +1,23 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.optics.Point;
-import ml.cluster.error.location.LocationMissingCoordinatesException;
-import ml.cluster.error.location.LocationMissingDeliveryParametersException;
-import ml.cluster.to.PickLocationViewDO;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import ml.cluster.datastructure.optics.OpticsPoint;
+import ml.cluster.datastructure.optics.Point;
+import ml.cluster.error.location.LocationMissingCoordinatesException;
+import ml.cluster.error.location.LocationMissingDeliveryParametersException;
+import ml.cluster.to.PickLocationViewDO;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PointServiceImplTest {
@@ -42,7 +44,7 @@ public class PointServiceImplTest {
     public void testGetPointsValid() throws Exception {
         mockValidLocation();
 
-        final List<Point> result = pointService.getPoints(locations);
+        final List<OpticsPoint> result = pointService.getPoints(locations);
         assertThat("Points should not be null", result, is(notNullValue()));
         assertThat("Points count should be greater then 0", result.size() > 0, is(true));
         assertThat("Points count should be equal to location count", result.size(), is(locations.size()));
@@ -72,5 +74,60 @@ public class PointServiceImplTest {
         locations.get(0).setX(X);
         locations.get(0).setY(Y);
         locations.get(0).setLine(LINE);
+    }
+
+    @Test
+    public void testIsCorePoint() {
+        final OpticsPoint point = mockCorePoint();
+        final boolean result = pointService.isCorePoint(point);
+        assertThat("Core point should have its core distance defined only", result, is(true));
+    }
+
+    private OpticsPoint mockCorePoint() {
+        mockValidLocation();
+        final Point point = Point.newInstance(locations.get(0));
+        point.setCoreDistance(5);
+        return point;
+    }
+
+    @Test
+    public void testIsClusterPoint() {
+        final OpticsPoint point = mockClusterPoint();
+        final boolean result = pointService.isClusterPoint(point);
+        assertThat("Cluster point should have its core and reachability distances defined", result, is(true));
+    }
+
+    private OpticsPoint mockClusterPoint() {
+        mockValidLocation();
+        final Point point = Point.newInstance(locations.get(0));
+        point.setCoreDistance(5);
+        point.setReachabilityDistance(5);
+        return point;
+    }
+
+    @Test
+    public void testIsBorderPoint() {
+        final OpticsPoint point = mockBorderPoint();
+        final boolean result = pointService.isBorderPoint(point);
+        assertThat("Border point should have its reachability distance defined only", result, is(true));
+    }
+
+    private OpticsPoint mockBorderPoint() {
+        mockValidLocation();
+        final Point point = Point.newInstance(locations.get(0));
+        point.setReachabilityDistance(5);
+        return point;
+    }
+
+    @Test
+    public void testIsOutlierPoint() {
+        final OpticsPoint point = mockOutlierPoint();
+        final boolean result = pointService.isOutlierPoint(point);
+        assertThat("Outlier point should have its core and reachability distances infinite", result, is(true));
+    }
+
+    private OpticsPoint mockOutlierPoint() {
+        mockValidLocation();
+        return Point.newInstance(locations.get(0));
     }
 }

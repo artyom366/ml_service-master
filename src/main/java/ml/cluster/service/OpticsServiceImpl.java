@@ -4,6 +4,7 @@ import ml.cluster.comparator.ReachabilityDistanceComparator;
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.optics.Optics;
+import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.Segment;
 import org.apache.commons.lang3.Validate;
@@ -16,7 +17,7 @@ import java.util.*;
 @Service("opticsService")
 public class OpticsServiceImpl implements OpticsService {
 
-    private final PriorityQueue<Point> nearestNeighboursQueue;
+    private final PriorityQueue<OpticsPoint> nearestNeighboursQueue;
 
 	@Autowired
 	private OpticsNeighboursService opticsNeighboursService;
@@ -26,7 +27,7 @@ public class OpticsServiceImpl implements OpticsService {
     }
 
     @Override
-	public List<Point> getOrderingPoints(final Set<Segment> segmentMatrices) {
+	public List<OpticsPoint> getOrderingPoints(final Set<Segment> segmentMatrices) {
 		Validate.notEmpty(segmentMatrices, "Segments are not defined");
 
 		final Optics optics = new Optics.OpticsBuilder().build();
@@ -45,16 +46,16 @@ public class OpticsServiceImpl implements OpticsService {
 	private void processMatrixCells(final FixedRadiusMatrix matrix, final Optics optics) {
 		final Map<Pair<Long, Long>, MatrixCell> cells = matrix.getCells();
 		cells.forEach((position, cell) -> {
-			final List<Point> locationPoints = cell.getLocationPoints();
+			final List<OpticsPoint> locationPoints = cell.getLocationPoints();
 			processCellLocationPoints(locationPoints, matrix, optics);
 		});
 	}
 
-	private void processCellLocationPoints(final List<Point> locationPoints, final FixedRadiusMatrix matrix, final Optics optics) {
+	private void processCellLocationPoints(final List<OpticsPoint> locationPoints, final FixedRadiusMatrix matrix, final Optics optics) {
 
-		for (final Point currentLocationPoint : locationPoints) {
+		for (final OpticsPoint currentLocationPoint : locationPoints) {
 
-			final List<Point> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
+			final List<OpticsPoint> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
 			if (nearestNeighbours.isEmpty()) {
 				saveProcessedLocationPoint(currentLocationPoint, optics);
 				continue;
@@ -66,7 +67,7 @@ public class OpticsServiceImpl implements OpticsService {
 		}
 	}
 
-	private void processCellLocationPoint(final Point currentLocationPoint, final List<Point> nearestNeighbours, final Optics optics) {
+	private void processCellLocationPoint(final OpticsPoint currentLocationPoint, final List<OpticsPoint> nearestNeighbours, final Optics optics) {
 		final double coreDistance = opticsNeighboursService.getCoreDistance(currentLocationPoint, nearestNeighbours, optics.getMinPts());
 
 		if (coreDistance < Double.POSITIVE_INFINITY) {
@@ -76,7 +77,7 @@ public class OpticsServiceImpl implements OpticsService {
 
 	}
 
-	private void updateNeighboursInfo(final Point coreLocationPoint, final List<Point> nearestNeighbours) {
+	private void updateNeighboursInfo(final OpticsPoint coreLocationPoint, final List<OpticsPoint> nearestNeighbours) {
 		nearestNeighbours.forEach(currentLocationPoint -> {
 			if (!currentLocationPoint.isProcessed()) {
 				updateNeighbourInfo(coreLocationPoint, currentLocationPoint);
@@ -84,7 +85,7 @@ public class OpticsServiceImpl implements OpticsService {
 		});
 	}
 
-	private void updateNeighbourInfo(final Point coreLocationPoint, final Point currentLocationPoint) {
+	private void updateNeighbourInfo(final OpticsPoint coreLocationPoint, final OpticsPoint currentLocationPoint) {
 		final double neighbourReachabilityDistance = opticsNeighboursService.getNeighbourReachabilityDistance(coreLocationPoint, currentLocationPoint);
 
 		if (currentLocationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY) {
@@ -99,13 +100,13 @@ public class OpticsServiceImpl implements OpticsService {
 	private void processNeighbours(final FixedRadiusMatrix matrix, final Optics optics) {
 
 		while (true) {
-			final Point currentLocationPoint = nearestNeighboursQueue.poll();
+			final OpticsPoint currentLocationPoint = nearestNeighboursQueue.poll();
 
 			if (currentLocationPoint == null) {
 				break;
 			}
 
-			final List<Point> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
+			final List<OpticsPoint> nearestNeighbours = opticsNeighboursService.getNearestNeighbours(currentLocationPoint, matrix);
 			final double coreDistance = opticsNeighboursService.getCoreDistance(currentLocationPoint, nearestNeighbours, optics.getMinPts());
 
 			currentLocationPoint.setCoreDistance(coreDistance);
@@ -117,7 +118,7 @@ public class OpticsServiceImpl implements OpticsService {
 		}
 	}
 
-	private void saveProcessedLocationPoint(final Point currentLocationPoint, final Optics optics) {
+	private void saveProcessedLocationPoint(final OpticsPoint currentLocationPoint, final Optics optics) {
 		if (!currentLocationPoint.isProcessed()) {
 			currentLocationPoint.setProcessed(true);
 			optics.addToOrderedLocationPoints(currentLocationPoint);

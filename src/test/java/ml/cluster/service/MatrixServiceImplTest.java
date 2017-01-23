@@ -2,6 +2,7 @@ package ml.cluster.service;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
+import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.Segment;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -30,9 +31,9 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testGetSegmentedLocationPoints() throws Exception {
-		final List<Point> points = TestLocationPointsGenerator.generateLocationPoints(NUMBER_OF_LOCATIONS);
+		final List<OpticsPoint> points = TestLocationPointsGenerator.generateLocationPoints(NUMBER_OF_LOCATIONS);
 
-		final Map<String, List<Point>> result = matrixService.groupLocationPointsInSegment(points);
+		final Map<String, List<OpticsPoint>> result = matrixService.groupLocationPointsInSegment(points);
 		assertThat("Location point grouping result should not be null", result, is(notNullValue()));
 		assertThat("Grouped location lines count should be the equal to total location lines count", result.size(), is(TestLocationPointsGenerator.getLocationLinesQuantity()));
 
@@ -42,15 +43,15 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testDefineSegmentBoundaries() throws Exception {
-		final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS_IN_GROUP);
+		final Map<String, List<OpticsPoint>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS_IN_GROUP);
 
-		final Map<Segment, List<Point>> result = matrixService.defineSegmentBoundaries(segmentGroups);
+		final Map<Segment, List<OpticsPoint>> result = matrixService.defineSegmentBoundaries(segmentGroups);
 		assertThat("Segments should not be null", result, is(notNullValue()));
 		assertThat("Segment count should not be 0", result.size() > 0, is(true));
 
 		result.forEach((segment, locationPoints) -> {
-			final DoubleSummaryStatistics xStats = locationPoints.stream().mapToDouble(Point::getX).summaryStatistics();
-			final DoubleSummaryStatistics yStats = locationPoints.stream().mapToDouble(Point::getY).summaryStatistics();
+			final DoubleSummaryStatistics xStats = locationPoints.stream().mapToDouble(OpticsPoint::getX).summaryStatistics();
+			final DoubleSummaryStatistics yStats = locationPoints.stream().mapToDouble(OpticsPoint::getY).summaryStatistics();
 
 			final double minY = yStats.getMin();
 			final double maxY = yStats.getMax();
@@ -68,8 +69,8 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testGenerateSegmentMatrix() throws Exception {
-		final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS_IN_MATRIX);
-		final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+		final Map<String, List<OpticsPoint>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS_IN_MATRIX);
+		final Map<Segment, List<OpticsPoint>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 
 		matrixService.generateSegmentMatrix(pickSegments);
 		assertThat("Segments should not be null", pickSegments, is(notNullValue()));
@@ -109,8 +110,8 @@ public class MatrixServiceImplTest {
 
 	@Test
 	public void testAssignPickLocationsToMatrixCells() throws Exception {
-		final Map<String, List<Point>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS_IN_MATRIX);
-		final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+		final Map<String, List<OpticsPoint>> segmentGroups = TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS_IN_MATRIX);
+		final Map<Segment, List<OpticsPoint>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 		matrixService.generateSegmentMatrix(pickSegments);
 		matrixService.assignLocationPointsToMatrixCells(pickSegments);
 
@@ -118,7 +119,7 @@ public class MatrixServiceImplTest {
 			final Map<Pair<Long, Long>, MatrixCell> cells = segment.getMatrix().getCells();
 
 			cells.forEach((position, cell) -> {
-				final List<Point> cellLocationPoints = cell.getLocationPoints();
+				final List<OpticsPoint> cellLocationPoints = cell.getLocationPoints();
 
 				cellLocationPoints.forEach(cellLocationPoint -> {
 					assertThat("Cell location point should be to the right from the left cell border", cellLocationPoint.getX() >= cell.getMinX(), is(true));
@@ -142,9 +143,9 @@ public class MatrixServiceImplTest {
 		final int fixedMaxXAxisValue = 15;
 		final int fixedMaxYAxisValue = 15;
 
-		final Map<String, List<Point>> segmentGroups =
+		final Map<String, List<OpticsPoint>> segmentGroups =
 			TestLocationPointsGenerator.generateGroupedLocationPoints(NUMBER_OF_LOCATIONS, fixedMaxXAxisValue, fixedMaxYAxisValue);
-		final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+		final Map<Segment, List<OpticsPoint>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
 		final Set<Segment> segmentsMatrices = matrixService.generateSegmentMatricesAndCells(pickSegments);
 
 		matrixService.generateSegmentMatrix(pickSegments);

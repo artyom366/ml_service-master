@@ -6,11 +6,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
 
-public final class Point {
+public final class Point implements OpticsPoint {
 
-	private Boolean isProcessed;
-	private Double coreDistance;
-	private Double reachabilityDistance;
+	private boolean isProcessed;
+	private double coreDistance;
+	private double reachabilityDistance;
 	private Pair<Long, Long> cell;
 	private final Long id;
 	private final Double x;
@@ -119,14 +119,17 @@ public final class Point {
 		return id;
 	}
 
+	@Override
 	public Double getX() {
 		return x;
 	}
 
+	@Override
 	public Double getY() {
 		return y;
 	}
 
+	@Override
 	public String getLine() {
 		return line;
 	}
@@ -207,81 +210,120 @@ public final class Point {
 		return dPack;
 	}
 
+	@Override
 	public boolean isProcessed() {
 		return isProcessed;
 	}
 
+	@Override
 	public void setProcessed(boolean processed) {
 		isProcessed = processed;
 	}
 
+	@Override
 	public double getCoreDistance() {
 		return coreDistance;
 	}
 
+	@Override
 	public void setCoreDistance(double coreDistance) {
 		this.coreDistance = coreDistance;
 	}
 
+	@Override
 	public double getReachabilityDistance() {
 		return reachabilityDistance;
 	}
 
+	@Override
 	public void setReachabilityDistance(double reachabilityDistance) {
 		this.reachabilityDistance = reachabilityDistance;
 	}
 
+	@Override
 	public Pair<Long, Long> getCell() {
 		return cell;
 	}
 
+	@Override
 	public void setCell(Pair<Long, Long> cell) {
 		this.cell = cell;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		Point point = (Point) o;
-
-		if (isProcessed != null ? !isProcessed.equals(point.isProcessed) : point.isProcessed != null) return false;
-		if (coreDistance != null ? !coreDistance.equals(point.coreDistance) : point.coreDistance != null) return false;
-		if (reachabilityDistance != null ? !reachabilityDistance.equals(point.reachabilityDistance) : point.reachabilityDistance != null)
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
 			return false;
-		if (cell != null ? !cell.equals(point.cell) : point.cell != null) return false;
-		if (id != null ? !id.equals(point.id) : point.id != null) return false;
-		if (x != null ? !x.equals(point.x) : point.x != null) return false;
-		if (y != null ? !y.equals(point.y) : point.y != null) return false;
-		if (line != null ? !line.equals(point.line) : point.line != null) return false;
-		if (scanCode != null ? !scanCode.equals(point.scanCode) : point.scanCode != null) return false;
-		if (deliveryId != null ? !deliveryId.equals(point.deliveryId) : point.deliveryId != null) return false;
-		if (customerId != null ? !customerId.equals(point.customerId) : point.customerId != null) return false;
-		if (trx != null ? !trx.equals(point.trx) : point.trx != null) return false;
-		if (coSeq != null ? !coSeq.equals(point.coSeq) : point.coSeq != null) return false;
-		if (clientId != null ? !clientId.equals(point.clientId) : point.clientId != null) return false;
-		if (wrin != null ? !wrin.equals(point.wrin) : point.wrin != null) return false;
-		if (quantity != null ? !quantity.equals(point.quantity) : point.quantity != null) return false;
-		if (goodsId != null ? !goodsId.equals(point.goodsId) : point.goodsId != null) return false;
-		if (warehouseId != null ? !warehouseId.equals(point.warehouseId) : point.warehouseId != null) return false;
-		if (location != null ? !location.equals(point.location) : point.location != null) return false;
-		if (pickSeq != null ? !pickSeq.equals(point.pickSeq) : point.pickSeq != null) return false;
-		if (pickZoneId != null ? !pickZoneId.equals(point.pickZoneId) : point.pickZoneId != null) return false;
-		if (grWeight != null ? !grWeight.equals(point.grWeight) : point.grWeight != null) return false;
-		if (cbm != null ? !cbm.equals(point.cbm) : point.cbm != null) return false;
-		if (refillEvent != null ? !refillEvent.equals(point.refillEvent) : point.refillEvent != null) return false;
-		if (quantityBase != null ? !quantityBase.equals(point.quantityBase) : point.quantityBase != null) return false;
-		if (pslipTypeId != null ? !pslipTypeId.equals(point.pslipTypeId) : point.pslipTypeId != null) return false;
+
+		Point point = (Point)o;
+
+		if (isProcessed != point.isProcessed)
+			return false;
+		if (Double.compare(point.coreDistance, coreDistance) != 0)
+			return false;
+		if (Double.compare(point.reachabilityDistance, reachabilityDistance) != 0)
+			return false;
+		if (cell != null ? !cell.equals(point.cell) : point.cell != null)
+			return false;
+		if (id != null ? !id.equals(point.id) : point.id != null)
+			return false;
+		if (x != null ? !x.equals(point.x) : point.x != null)
+			return false;
+		if (y != null ? !y.equals(point.y) : point.y != null)
+			return false;
+		if (line != null ? !line.equals(point.line) : point.line != null)
+			return false;
+		if (scanCode != null ? !scanCode.equals(point.scanCode) : point.scanCode != null)
+			return false;
+		if (deliveryId != null ? !deliveryId.equals(point.deliveryId) : point.deliveryId != null)
+			return false;
+		if (customerId != null ? !customerId.equals(point.customerId) : point.customerId != null)
+			return false;
+		if (trx != null ? !trx.equals(point.trx) : point.trx != null)
+			return false;
+		if (coSeq != null ? !coSeq.equals(point.coSeq) : point.coSeq != null)
+			return false;
+		if (clientId != null ? !clientId.equals(point.clientId) : point.clientId != null)
+			return false;
+		if (wrin != null ? !wrin.equals(point.wrin) : point.wrin != null)
+			return false;
+		if (quantity != null ? !quantity.equals(point.quantity) : point.quantity != null)
+			return false;
+		if (goodsId != null ? !goodsId.equals(point.goodsId) : point.goodsId != null)
+			return false;
+		if (warehouseId != null ? !warehouseId.equals(point.warehouseId) : point.warehouseId != null)
+			return false;
+		if (location != null ? !location.equals(point.location) : point.location != null)
+			return false;
+		if (pickSeq != null ? !pickSeq.equals(point.pickSeq) : point.pickSeq != null)
+			return false;
+		if (pickZoneId != null ? !pickZoneId.equals(point.pickZoneId) : point.pickZoneId != null)
+			return false;
+		if (grWeight != null ? !grWeight.equals(point.grWeight) : point.grWeight != null)
+			return false;
+		if (cbm != null ? !cbm.equals(point.cbm) : point.cbm != null)
+			return false;
+		if (refillEvent != null ? !refillEvent.equals(point.refillEvent) : point.refillEvent != null)
+			return false;
+		if (quantityBase != null ? !quantityBase.equals(point.quantityBase) : point.quantityBase != null)
+			return false;
+		if (pslipTypeId != null ? !pslipTypeId.equals(point.pslipTypeId) : point.pslipTypeId != null)
+			return false;
 		return dPack != null ? dPack.equals(point.dPack) : point.dPack == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = isProcessed != null ? isProcessed.hashCode() : 0;
-		result = 31 * result + (coreDistance != null ? coreDistance.hashCode() : 0);
-		result = 31 * result + (reachabilityDistance != null ? reachabilityDistance.hashCode() : 0);
+		int result;
+		long temp;
+		result = (isProcessed ? 1 : 0);
+		temp = Double.doubleToLongBits(coreDistance);
+		result = 31 * result + (int)(temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(reachabilityDistance);
+		result = 31 * result + (int)(temp ^ (temp >>> 32));
 		result = 31 * result + (cell != null ? cell.hashCode() : 0);
 		result = 31 * result + (id != null ? id.hashCode() : 0);
 		result = 31 * result + (x != null ? x.hashCode() : 0);

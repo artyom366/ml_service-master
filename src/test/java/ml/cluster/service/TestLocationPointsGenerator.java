@@ -1,5 +1,6 @@
 package ml.cluster.service;
 
+import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.generator.RandomGenerator;
 import ml.cluster.to.PickLocationViewDO;
@@ -15,17 +16,17 @@ public class TestLocationPointsGenerator {
     private final static String[] LINES = {"AA", "BB", "CC"};
     private final static int RADIUS = 10;
 
-    private static List<Point> POINTS = generateSpecificLocationPoints();
+    private static List<OpticsPoint> POINTS = generateSpecificLocationPoints();
 
     public static int getLocationLinesQuantity() {
         return LINES.length;
     }
 
-    public static List<Point> generateLocationPoints(final int quantity) {
+    public static List<OpticsPoint> generateLocationPoints(final int quantity) {
         return generateLocationPoints(quantity, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
     }
 
-    public static List<Point> generateLocationPoints(final int quantity, final int maxX, final int maxY) {
+    public static List<OpticsPoint> generateLocationPoints(final int quantity, final int maxX, final int maxY) {
         final List<Point> points = new ArrayList<>();
 
         IntStream.range(0, quantity).forEach(item -> {
@@ -40,9 +41,9 @@ public class TestLocationPointsGenerator {
         return Collections.unmodifiableList(points);
     }
 
-    public static Map<String, List<Point>> generateGroupedLocationPoints(final int quantity, final int maxX, final int maxY) {
-        final List<Point> points = new ArrayList<>();
-        final Map<String, List<Point>> groupedPoints = new HashMap<>();
+    public static Map<String, List<OpticsPoint>> generateGroupedLocationPoints(final int quantity, final int maxX, final int maxY) {
+        final List<OpticsPoint> points = new ArrayList<>();
+        final Map<String, List<OpticsPoint>> groupedPoints = new HashMap<>();
 
         IntStream.range(0, quantity).forEach(item -> {
             final PickLocationViewDO location = new PickLocationViewDO();
@@ -57,7 +58,7 @@ public class TestLocationPointsGenerator {
         return Collections.unmodifiableMap(groupedPoints);
     }
 
-    public static Map<String, List<Point>> generateGroupedLocationPoints(final int quantity) {
+    public static Map<String, List<OpticsPoint>> generateGroupedLocationPoints(final int quantity) {
         return generateGroupedLocationPoints(quantity, MAX_X_AXIS_VALUE, MAX_Y_AXIS_VALUE);
     }
 
@@ -73,13 +74,13 @@ public class TestLocationPointsGenerator {
         return Point.newInstance(location);
     }
 
-    public static List<Point> generateLocationPointWithDistance(final int quantity, final int maxX, final int maxY, final int radius) {
-        final List<Point> points = generateLocationPoints(quantity, maxX, maxY);
+    public static List<OpticsPoint> generateLocationPointWithDistance(final int quantity, final int maxX, final int maxY, final int radius) {
+        final List<OpticsPoint> points = generateLocationPoints(quantity, maxX, maxY);
         return setReachabilityDistance(points, radius);
     }
 
-    private static List<Point> setReachabilityDistance(final List<Point> locations, final int radius) {
-        final List<Point> points = new ArrayList<>();
+    private static List<OpticsPoint> setReachabilityDistance(final List<OpticsPoint> locations, final int radius) {
+        final List<OpticsPoint> points = new ArrayList<>();
 
         locations.forEach(location -> {
             setReachabilityDistance(location, radius);
@@ -89,19 +90,19 @@ public class TestLocationPointsGenerator {
         return Collections.unmodifiableList(points);
     }
 
-    private static void setReachabilityDistance(final Point point, final int radius) {
+    private static void setReachabilityDistance(final OpticsPoint point, final int radius) {
         point.setReachabilityDistance(RandomGenerator.generateUniformDouble(radius));
     }
 
-    public static Map<String, List<Point>> generateGroupedSpecificLocationPoints() {
-        final Map<String, List<Point>> groupedPoints = new HashMap<>();
+    public static Map<String, List<OpticsPoint>> generateGroupedSpecificLocationPoints() {
+        final Map<String, List<OpticsPoint>> groupedPoints = new HashMap<>();
         POINTS = generateSpecificLocationPoints();
 
         groupedPoints.put(LINES[0], POINTS);
         return Collections.unmodifiableMap(groupedPoints);
     }
 
-    private static List<Point> generateSpecificLocationPoints() {
+    private static List<OpticsPoint> generateSpecificLocationPoints() {
 
         //start of the cluster 1
         final Point point_0_0 = generateSingleLocationPoint(0, 0);
