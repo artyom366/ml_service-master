@@ -55,7 +55,9 @@ public class OpticsExtractorServiceImplTest {
 		OPTICS.add(prepareClusterPoint());
 		OPTICS.add(prepareBorderPoint());
 		OPTICS.add(prepareBorderPoint());
+		OPTICS.add(prepareBorderPoint());
 		OPTICS.add(prepareOutlierPoint());
+
 		OPTICS.add(prepareCorePoint());
 		OPTICS.add(prepareClusterPoint());
 		OPTICS.add(prepareClusterPoint());
@@ -63,6 +65,14 @@ public class OpticsExtractorServiceImplTest {
 		OPTICS.add(prepareClusterPoint());
 		OPTICS.add(prepareClusterPoint());
 		OPTICS.add(prepareBorderPoint());
+		OPTICS.add(prepareBorderPoint());
+
+		OPTICS.add(prepareCorePoint());
+		OPTICS.add(prepareClusterPoint());
+		OPTICS.add(prepareClusterPoint());
+		OPTICS.add(prepareClusterPoint());
+		OPTICS.add(prepareClusterPoint());
+		OPTICS.add(prepareClusterPoint());
 		OPTICS.add(prepareBorderPoint());
 		OPTICS.add(prepareOutlierPoint());
 	}
@@ -92,7 +102,23 @@ public class OpticsExtractorServiceImplTest {
 
 	@Test
 	public void testExtractClusters() {
-		final List<Cluster> clusters = opticsExtractorService.extractClusters(OPTICS);
-		assertThat(clusters, is(notNullValue()));
+		final List<Cluster> result = opticsExtractorService.extractClusters(OPTICS);
+		assertThat("Cluster extraction result should not be null", result, is(notNullValue()));
+		assertThat("There should be 3 clusters extracted", result.size(), is(3));
+
+		final Cluster cluster_0 = result.get(0);
+		final Cluster cluster_1 = result.get(1);
+		final Cluster cluster_2 = result.get(2);
+
+		assertThat("Cluster should not be null", cluster_0, is(notNullValue()));
+		assertThat("Cluster should not be null", cluster_1, is(notNullValue()));
+		assertThat("Cluster should not be null", cluster_2, is(notNullValue()));
+
+		assertThat("Cluster points should not be null", cluster_0.getClusterPoints(), is(notNullValue()));
+		assertThat("There should be 9 point in the cluster", cluster_0.getClusterPoints().size(), is(9));
+		assertThat("Cluster points should not be null", cluster_1.getClusterPoints(), is(notNullValue()));
+		assertThat("There should be 7 point in the cluster", cluster_1.getClusterPoints().size(), is(7));
+		assertThat("Cluster points should not be null", cluster_2.getClusterPoints(), is(notNullValue()));
+		assertThat("There should be 8 point in the cluster", cluster_2.getClusterPoints().size(), is(8));
 	}
 }
