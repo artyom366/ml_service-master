@@ -18,9 +18,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import ml.cluster.datastructure.optics.OpticsPoint;
+import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.Segment;
-import ml.cluster.error.matrix.MatrixException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpticsServiceImplTest {
@@ -37,9 +36,9 @@ public class OpticsServiceImplTest {
     private Set<Segment> segmentsMatrices;
 
     @Before
-    public void setUp() throws MatrixException {
-        final Map<String, List<OpticsPoint>> segmentGroups = generateGroupedSpecificLocationPoints();
-        final Map<Segment, List<OpticsPoint>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
+	public void setUp() throws Exception {
+        final Map<String, List<Point>> segmentGroups = generateGroupedSpecificLocationPoints();
+        final Map<Segment, List<Point>> pickSegments = matrixService.defineSegmentBoundaries(segmentGroups);
         matrixService.generateSegmentMatrix(pickSegments);
         matrixService.assignLocationPointsToMatrixCells(pickSegments);
 
@@ -48,8 +47,8 @@ public class OpticsServiceImplTest {
     }
 
     @Test
-    public void testGetOrderingPoints() {
-        final List<OpticsPoint> result = opticsService.getOrderingPoints(segmentsMatrices);
+    public void testGetOrderingPoints() throws Exception {
+        final List<Point> result = opticsService.getOrderingPoints(segmentsMatrices);
         assertThat("Ordering location points should not be null", result, (is(notNullValue())));
         assertThat("Ordering location points count should equals to total location points count", result.size(), is(getSpecificLocationPointsQuantity()));
 
@@ -58,7 +57,7 @@ public class OpticsServiceImplTest {
         int borderLocationPointCounter = 0;
         int outlierLocationPointsCounter = 0;
 
-        for (final OpticsPoint locationPoint : result) {
+        for (final Point locationPoint : result) {
             assertThat("Ordering location point should be processed", locationPoint.isProcessed(), is(true));
 
             if (isCoreLocationPoint(locationPoint)) {
@@ -84,19 +83,19 @@ public class OpticsServiceImplTest {
         assertThat("There should be 1 outlier location point", outlierLocationPointsCounter, is(1));
     }
 
-    private boolean isCoreLocationPoint(final OpticsPoint locationPoint) {
+    private boolean isCoreLocationPoint(final Point locationPoint) {
         return locationPoint.getCoreDistance() < Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY;
     }
 
-    private boolean isClusterLocationPoint(final OpticsPoint locationPoint) {
+    private boolean isClusterLocationPoint(final Point locationPoint) {
         return locationPoint.getCoreDistance() < Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 
-    private boolean isBorderLocationPoint(final OpticsPoint locationPoint) {
+    private boolean isBorderLocationPoint(final Point locationPoint) {
         return locationPoint.getCoreDistance() == Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 
-    private boolean isOutlierLocationPoint(final OpticsPoint locationPoint) {
+    private boolean isOutlierLocationPoint(final Point locationPoint) {
         return locationPoint.getCoreDistance() == Double.POSITIVE_INFINITY && locationPoint.getReachabilityDistance() == Double.POSITIVE_INFINITY;
     }
 

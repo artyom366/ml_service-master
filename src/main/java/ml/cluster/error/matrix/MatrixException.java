@@ -1,6 +1,8 @@
 package ml.cluster.error.matrix;
 
-public class MatrixException extends Exception {
+import ml.cluster.error.OpticsException;
+
+public class MatrixException extends OpticsException {
 
 	private final static String MESSAGE = "Fixed radius matrix construction failed: %s";
 

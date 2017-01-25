@@ -1,49 +1,12 @@
 package ml.cluster.datastructure.optics;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.Validate;
+public interface Optics {
 
-public final class Optics {
+	long getRadius();
 
-	private final int minPts;
-	private final List<OpticsPoint> orderedLocationPoints;
+	int getMinPts();
 
-	private Optics(final OpticsBuilder opticsBuilder) {
-		this.minPts = opticsBuilder.minPts;
-		this.orderedLocationPoints = opticsBuilder.orderedLocationPoints;
-	}
-
-	public int getMinPts() {
-		return minPts;
-	}
-
-	public List<OpticsPoint> getOrderedLocationPoints() {
-		return orderedLocationPoints;
-	}
-
-	public void addToOrderedLocationPoints(final OpticsPoint point) {
-		Validate.notNull(point, "Pick location point is not defined");
-		this.orderedLocationPoints.add(point);
-	}
-
-	public final static class OpticsBuilder {
-
-		private int minPts = 5;
-		private final List<OpticsPoint> orderedLocationPoints;
-
-		public OpticsBuilder() {
-			this.orderedLocationPoints = new LinkedList<>();
-		}
-
-		public OpticsBuilder minPts(final int minPts) {
-			this.minPts = minPts;
-			return this;
-		}
-
-		public Optics build() {
-			return new Optics(this);
-		}
-	}
+	List<Point> getOrderedLocationPoints();
 }

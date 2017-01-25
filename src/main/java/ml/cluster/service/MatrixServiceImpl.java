@@ -2,9 +2,9 @@ package ml.cluster.service;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
-import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.segment.Segment;
+import ml.cluster.error.OpticsException;
 import ml.cluster.error.matrix.CellNeighborsInconsistencyException;
 import ml.cluster.error.matrix.CellNoAreaSpecifiedException;
 import ml.cluster.error.matrix.MatrixException;
@@ -21,25 +21,25 @@ import java.util.stream.Collectors;
 public class MatrixServiceImpl implements MatrixService {
 
     @Override
-    public Set<Segment> getSegmentedLocationPoints(final List<OpticsPoint> points) throws MatrixException {
+    public Set<Segment> getSegmentedLocationPoints(final List<Point> points) throws OpticsException {
         Validate.notEmpty(points, "Location points are not defined");
 
-        final Map<String, List<OpticsPoint>> segmentGroups = groupLocationPointsInSegment(points);
-        final Map<Segment, List<OpticsPoint>> segments = defineSegmentBoundaries(segmentGroups);
+        final Map<String, List<Point>> segmentGroups = groupLocationPointsInSegment(points);
+        final Map<Segment, List<Point>> segments = defineSegmentBoundaries(segmentGroups);
 
         return generateSegmentMatricesAndCells(segments);
     }
 
-    protected Map<String, List<OpticsPoint>> groupLocationPointsInSegment(final List<OpticsPoint> points) {
-        return Collections.unmodifiableMap(points.stream().collect(Collectors.groupingBy(OpticsPoint::getLine)));
+    protected Map<String, List<Point>> groupLocationPointsInSegment(final List<Point> points) {
+        return Collections.unmodifiableMap(points.stream().collect(Collectors.groupingBy(Point::getLine)));
     }
 
-    protected Map<Segment, List<OpticsPoint>> defineSegmentBoundaries(final Map<String, List<OpticsPoint>> segmentGroups) {
-        final Map<Segment, List<OpticsPoint>> segments = new HashMap<>();
+    protected Map<Segment, List<Point>> defineSegmentBoundaries(final Map<String, List<Point>> segmentGroups) {
+        final Map<Segment, List<Point>> segments = new HashMap<>();
 
         segmentGroups.forEach((line, locationPoints) -> {
-            final DoubleSummaryStatistics xStats = locationPoints.stream().mapToDouble(OpticsPoint::getX).summaryStatistics();
-            final DoubleSummaryStatistics yStats = locationPoints.stream().mapToDouble(OpticsPoint::getY).summaryStatistics();
+            final DoubleSummaryStatistics xStats = locationPoints.stream().mapToDouble(Point::getX).summaryStatistics();
+            final DoubleSummaryStatistics yStats = locationPoints.stream().mapToDouble(Point::getY).summaryStatistics();
 
             final double minY = yStats.getMin();
             final double maxY = yStats.getMax();
@@ -52,13 +52,13 @@ public class MatrixServiceImpl implements MatrixService {
         return Collections.unmodifiableMap(segments);
     }
 
-    protected Set<Segment> generateSegmentMatricesAndCells(final Map<Segment, List<OpticsPoint>> segments) throws MatrixException {
+    protected Set<Segment> generateSegmentMatricesAndCells(final Map<Segment, List<Point>> segments) throws OpticsException {
         generateSegmentMatrix(segments);
         assignLocationPointsToMatrixCells(segments);
         return finishSegmentMatrixCreation(segments);
     }
 
-    protected void generateSegmentMatrix(final Map<Segment, List<OpticsPoint>> segments) throws MatrixException {
+    protected void generateSegmentMatrix(final Map<Segment, List<Point>> segments) throws OpticsException {
         for (final Segment segment : segments.keySet()) {
 
             final double matrixHeight = segment.getMaxY() - segment.getMinY();
@@ -77,13 +77,13 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    private void validateMatrixSize(final double matrixHeight, final double matrixWidth) throws MatrixException {
+    private void validateMatrixSize(final double matrixHeight, final double matrixWidth) throws OpticsException {
         if (matrixHeight == 0 || matrixWidth == 0) {
             throw new MatrixNoAreaSpecifiedException(matrixWidth, matrixHeight);
         }
     }
 
-    private void validateCellSize(final FixedRadiusMatrix matrix) throws MatrixException {
+    private void validateCellSize(final FixedRadiusMatrix matrix) throws OpticsException {
         if (matrix.getCellHeight() == 0 || matrix.getCellWidth() == 0) {
             throw new CellNoAreaSpecifiedException(matrix.getCellWidth(), matrix.getCellHeight());
         }
@@ -115,7 +115,7 @@ public class MatrixServiceImpl implements MatrixService {
         segment.getMatrix().addCell(new ImmutablePair<>(currentRow, currentColumn), cell);
     }
 
-    protected void assignLocationPointsToMatrixCells(final Map<Segment, List<OpticsPoint>> segments) {
+    protected void assignLocationPointsToMatrixCells(final Map<Segment, List<Point>> segments) {
         segments.forEach((segment, locationPoints) -> {
 
             final Map<Pair<Long, Long>, MatrixCell> cells = segment.getMatrix().getCells();
@@ -133,21 +133,21 @@ public class MatrixServiceImpl implements MatrixService {
         });
     }
 
-    private boolean locationPointCoordinatesMatchesCell(final OpticsPoint point, final MatrixCell cell) {
+    private boolean locationPointCoordinatesMatchesCell(final Point point, final MatrixCell cell) {
         return point.getX() < cell.getMaxX() && point.getX() >= cell.getMinX() && point.getY() < cell.getMaxY() && point.getY() >= cell.getMinY();
     }
 
-    private Set<Segment> finishSegmentMatrixCreation(final Map<Segment, List<OpticsPoint>> segments) throws MatrixException {
+    private Set<Segment> finishSegmentMatrixCreation(final Map<Segment, List<Point>> segments) throws OpticsException {
         final Set<Segment> segmentMatrices = getSegments(segments);
         assignNeighboringMatrixCells(segmentMatrices);
         return segmentMatrices;
     }
 
-    private Set<Segment> getSegments(final Map<Segment, List<OpticsPoint>> segments) {
+    private Set<Segment> getSegments(final Map<Segment, List<Point>> segments) {
         return Collections.unmodifiableSet(segments.keySet());
     }
 
-    protected void assignNeighboringMatrixCells(final Set<Segment> segmentsMatrices) throws MatrixException {
+    protected void assignNeighboringMatrixCells(final Set<Segment> segmentsMatrices) throws OpticsException {
 
         for (final Segment segment : segmentsMatrices) {
             final Map<Pair<Long, Long>, MatrixCell> cells = segment.getMatrix().getCells();
@@ -191,7 +191,7 @@ public class MatrixServiceImpl implements MatrixService {
         }
     }
 
-    private Set<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> potentialNeighbors, final long maxRow, final long maxColumn) throws MatrixException {
+    private Set<Pair<Long, Long>> refinePotentialNeighbors(final List<Pair<Long, Long>> potentialNeighbors, final long maxRow, final long maxColumn) throws OpticsException {
         final List<Pair<Long, Long>> refinedNeighbors = potentialNeighbors.stream().filter(neighbor -> isValidNeighbor(neighbor, maxRow, maxColumn)).collect(Collectors.toList());
         return Collections.unmodifiableSet(getValidatedCellNeighbors(refinedNeighbors));
     }
@@ -200,7 +200,7 @@ public class MatrixServiceImpl implements MatrixService {
         return neighbor.getLeft() >= 0 && neighbor.getLeft() <= maxRow && neighbor.getRight() >= 0 && neighbor.getRight() <= maxColumn;
     }
 
-    private Set<Pair<Long, Long>> getValidatedCellNeighbors(final List<Pair<Long, Long>> refinedNeighbors) throws CellNeighborsInconsistencyException {
+    private Set<Pair<Long, Long>> getValidatedCellNeighbors(final List<Pair<Long, Long>> refinedNeighbors) throws OpticsException {
         final Set<Pair<Long, Long>> neighbors = new HashSet<>(refinedNeighbors);
 
         if (neighbors.size() != refinedNeighbors.size()) {

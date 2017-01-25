@@ -1,8 +1,10 @@
 package ml.cluster.error.location;
 
-public class LocationException extends Exception {
+import ml.cluster.error.OpticsException;
 
-    private static final String MESSAGE = "Location data exception: %s";
+public class LocationException extends OpticsException {
+
+    private static final String MESSAGE = "Location data validation failed: %s";
 
     public LocationException(final String message) {
         super(String.format(MESSAGE, message));

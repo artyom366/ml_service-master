@@ -1,7 +1,8 @@
 package ml.cluster.service;
 
-import ml.cluster.datastructure.optics.OpticsPoint;
 import ml.cluster.datastructure.optics.Point;
+import ml.cluster.datastructure.optics.impl.PointImpl;
+import ml.cluster.error.OpticsException;
 import ml.cluster.error.location.LocationException;
 import ml.cluster.error.location.LocationMissingCoordinatesException;
 import ml.cluster.error.location.LocationMissingDeliveryParametersException;
@@ -17,21 +18,21 @@ import java.util.List;
 public class PointServiceImpl implements PointService {
 
     @Override
-    public List<OpticsPoint> getPoints(final List<PickLocationViewDO> locations) throws LocationException {
+    public List<Point> getPoints(final List<PickLocationViewDO> locations) throws OpticsException {
         Validate.notEmpty(locations, "Locations are not defined");
 
-        final List<OpticsPoint> points = new ArrayList<>();
+        final List<Point> points = new ArrayList<>();
 
         for (final PickLocationViewDO location : locations) {
             validateLocation(location);
-            final OpticsPoint point = Point.newInstance(location);
+            final Point point = PointImpl.newInstance(location);
             points.add(point);
         }
 
         return Collections.unmodifiableList(points);
     }
 
-    private void validateLocation(final PickLocationViewDO location) throws LocationException {
+    private void validateLocation(final PickLocationViewDO location) throws OpticsException {
         if (location.getX() == null && location.getY() == null && location.getLine() == null) {
             throw new LocationMissingCoordinatesException(String.format("X: %s, Y: %s, Line: %s", location.getX(), location.getY(), location.getLine()));
 
@@ -42,26 +43,26 @@ public class PointServiceImpl implements PointService {
     }
 
     @Override
-    public boolean isOutlierPoint(final OpticsPoint point) {
-        Validate.notNull(point, "Optics point is not defined");
+    public boolean isOutlierPoint(final Point point) {
+        Validate.notNull(point, "OpticsImpl point is not defined");
         return point.getReachabilityDistance() == Double.POSITIVE_INFINITY && point.getCoreDistance() == Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public boolean isCorePoint(final OpticsPoint point) {
-        Validate.notNull(point, "Optics point is not defined");
+    public boolean isCorePoint(final Point point) {
+        Validate.notNull(point, "OpticsImpl point is not defined");
         return point.getCoreDistance() < Double.POSITIVE_INFINITY && point.getReachabilityDistance() == Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public boolean isClusterPoint(final OpticsPoint point) {
-        Validate.notNull(point, "Optics point is not defined");
+    public boolean isClusterPoint(final Point point) {
+        Validate.notNull(point, "OpticsImpl point is not defined");
         return point.getCoreDistance() < Double.POSITIVE_INFINITY && point.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 
     @Override
-    public boolean isBorderPoint(final OpticsPoint point) {
-        Validate.notNull(point, "Optics point is not defined");
+    public boolean isBorderPoint(final Point point) {
+        Validate.notNull(point, "OpticsImpl point is not defined");
         return point.getCoreDistance() == Double.POSITIVE_INFINITY && point.getReachabilityDistance() < Double.POSITIVE_INFINITY;
     }
 }
