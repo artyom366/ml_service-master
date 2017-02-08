@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import static ml.cluster.service.TestOpticsGenerator.generateOptics;
 import static ml.cluster.service.TestOpticsGenerator.generateOpticsWithDistanceErrorInCluster;
@@ -18,7 +18,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import ml.cluster.datastructure.optics.Cluster;
 import ml.cluster.datastructure.optics.Optics;
 import ml.cluster.datastructure.optics.OpticsSummary;
-import ml.cluster.datastructure.optics.impl.OpticsImpl;
 import ml.cluster.error.cluster.ClusterDistanceException;
 import ml.cluster.error.cluster.ClusterSizeException;
 

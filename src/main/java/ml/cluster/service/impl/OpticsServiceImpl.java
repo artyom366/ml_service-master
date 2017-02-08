@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +17,8 @@ import ml.cluster.datastructure.matrix.MatrixCell;
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.optics.impl.OpticsImpl;
 import ml.cluster.datastructure.segment.Segment;
+import ml.cluster.service.OpticsNeighboursService;
+import ml.cluster.service.OpticsService;
 
 @Service("opticsService")
 public class OpticsServiceImpl implements OpticsService {

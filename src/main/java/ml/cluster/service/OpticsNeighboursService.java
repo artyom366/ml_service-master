@@ -9,6 +9,8 @@ public interface OpticsNeighboursService {
 
     double getCoreDistance(Point currentLocation, List<Point> nearestLocations, int minPts);
 
+    double getLocationsDistance(Point currentLocationPoint, Point neighboringLocationPoint);
+
     double getNeighbourReachabilityDistance(Point centerPoint, Point neighbourPoint);
 
     List<Point> getNearestNeighbours(Point currentLocationPoint, FixedRadiusMatrix matrix);

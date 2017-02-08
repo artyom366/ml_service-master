@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import ml.cluster.datastructure.matrix.FixedRadiusMatrix;
 import ml.cluster.datastructure.matrix.MatrixCell;
@@ -9,6 +9,8 @@ import ml.cluster.error.matrix.CellNeighborsInconsistencyException;
 import ml.cluster.error.matrix.CellNoAreaSpecifiedException;
 import ml.cluster.error.matrix.MatrixException;
 import ml.cluster.error.matrix.MatrixNoAreaSpecifiedException;
+import ml.cluster.service.MatrixService;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;

@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.optics.impl.PointImpl;
@@ -6,6 +6,7 @@ import ml.cluster.error.OpticsException;
 import ml.cluster.error.location.LocationException;
 import ml.cluster.error.location.LocationMissingCoordinatesException;
 import ml.cluster.error.location.LocationMissingDeliveryParametersException;
+import ml.cluster.service.PointService;
 import ml.cluster.to.PickLocationViewDO;
 import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,8 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.optics.impl.PointImpl;
+import ml.cluster.service.TestLocationPointsGenerator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import static ml.cluster.service.TestLocationPointsGenerator.generateGroupedSpecificLocationPoints;
 import static ml.cluster.service.TestLocationPointsGenerator.getSpecificLocationPointsQuantity;

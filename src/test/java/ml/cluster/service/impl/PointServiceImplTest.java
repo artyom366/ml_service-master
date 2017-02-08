@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -17,6 +17,7 @@ import ml.cluster.datastructure.optics.Point;
 import ml.cluster.datastructure.optics.impl.PointImpl;
 import ml.cluster.error.location.LocationMissingCoordinatesException;
 import ml.cluster.error.location.LocationMissingDeliveryParametersException;
+import ml.cluster.service.impl.PointServiceImpl;
 import ml.cluster.to.PickLocationViewDO;
 
 @RunWith(MockitoJUnitRunner.class)

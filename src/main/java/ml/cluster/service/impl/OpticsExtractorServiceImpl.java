@@ -1,4 +1,4 @@
-package ml.cluster.service;
+package ml.cluster.service.impl;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,6 +17,8 @@ import ml.cluster.datastructure.optics.impl.OpticsSummaryImpl;
 import ml.cluster.error.OpticsException;
 import ml.cluster.error.cluster.ClusterDistanceException;
 import ml.cluster.error.cluster.ClusterSizeException;
+import ml.cluster.service.OpticsExtractorService;
+import ml.cluster.service.PointService;
 
 @Service("opticsExtractorService")
 public class OpticsExtractorServiceImpl implements OpticsExtractorService {
