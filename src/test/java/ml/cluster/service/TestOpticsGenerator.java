@@ -1,11 +1,14 @@
 package ml.cluster.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import ml.cluster.datastructure.optics.Cluster;
 import ml.cluster.datastructure.optics.Optics;
 import ml.cluster.datastructure.optics.Point;
+import ml.cluster.datastructure.optics.impl.ClusterImpl;
 import ml.cluster.datastructure.optics.impl.OpticsImpl;
 import ml.cluster.datastructure.optics.impl.PointImpl;
 import ml.cluster.to.PickLocationViewDO;
@@ -13,6 +16,8 @@ import ml.cluster.to.PickLocationViewDO;
 public class TestOpticsGenerator {
 
 	private final static double DELTA = 5d;
+	private final static double X = 5d;
+	private final static double Y = 5d;
 
 	public static Optics generateOptics() {
 		final PickLocationViewDO location = prepareDummyLocation();
@@ -34,7 +39,7 @@ public class TestOpticsGenerator {
 
 	public static Optics generateOpticsWithSizeErrorInCluster() {
 		final PickLocationViewDO location = prepareDummyLocation();
-		final List<Point> points = preparePointsWithUnderSizeCluster(location);
+		final List<Point> points = preparePointsForSmallCluster(location);
 		final OpticsImpl optics = new OpticsImpl.OpticsBuilder().build();
 
 		optics.addAllToOrderedLocationPoints(points);
@@ -42,11 +47,15 @@ public class TestOpticsGenerator {
 	}
 
 	private static PickLocationViewDO prepareDummyLocation() {
-		final PickLocationViewDO LOCATION = new PickLocationViewDO();
-		LOCATION.setX(5d);
-		LOCATION.setY(5d);
-		LOCATION.setLine("AA");
-		return LOCATION;
+		return prepareLocation(X, Y);
+	}
+
+	private static PickLocationViewDO prepareLocation(final double x, final double y) {
+		final PickLocationViewDO location = new PickLocationViewDO();
+		location.setX(x);
+		location.setY(y);
+		location.setLine("AA");
+		return location;
 	}
 
 	private static List<Point> preparePoints(final PickLocationViewDO location) {
@@ -98,7 +107,7 @@ public class TestOpticsGenerator {
 		return Collections.unmodifiableList(points);
 	}
 
-	private static List<Point> preparePointsWithUnderSizeCluster(final PickLocationViewDO location) {
+	private static List<Point> preparePointsForSmallCluster(final PickLocationViewDO location) {
 		final List<Point> points = new LinkedList<>();
 
 		points.add(prepareCorePoint(location, 5d));
@@ -106,6 +115,22 @@ public class TestOpticsGenerator {
 		points.add(prepareClusterPoint(location, 5d, 5d));
 
 		return Collections.unmodifiableList(points);
+	}
+
+	public static Cluster prepareValidClusterWithStatingLocationAndLimitation(final int x, final int y, final int limit) {
+		return new ClusterImpl(preparePointsForValidClusterWithStatingLocationAndLimitation(x, y, limit));
+	}
+
+	private static List<Point> preparePointsForValidClusterWithStatingLocationAndLimitation(final int x, final int y, final int limit) {
+		final List<Point> points = new ArrayList<>();
+
+		for (int i = x; i < x + limit; i++) {
+			for (int j = y; j < y + limit; j++) {
+				points.add(PointImpl.newInstance(prepareLocation(i, j)));
+			}
+		}
+
+		return points;
 	}
 
 	private static Point prepareCorePoint(final PickLocationViewDO location, final double coreDistance) {

@@ -23,6 +23,11 @@ public final class ClusterImpl implements Cluster {
         this.locationPoints = new LinkedList<>();
     }
 
+    public ClusterImpl(final List<Point> locationPoints) {
+        this.locationPoints = new LinkedList<>();
+        this.locationPoints.addAll(locationPoints);
+    }
+
     public void addToCluster(final Point point) {
         Validate.notNull(point, "PointImpl is not defined");
         this.locationPoints.add(point);
